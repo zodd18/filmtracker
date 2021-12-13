@@ -3,5 +3,9 @@
     <string name="email_text">Correo</string>
     <string name="password_text">Contraseña</string>
     <string name="log_in_text">Iniciar Sesión</string>
-    <string name="not_registered_yet_text">Aún no estás registrado? Registrate ahora!</string>
+    <string name="not_registered_yet_text">Registrate ahora!</string>
+    <string name="repeat_password_text">Repite Contraseña</string>
+    <string name="sign_up_text">Registrarse</string>
+    <string name="already_registered_text">Ya poseo una cuenta. Volver al Login.</string>
+    <string name="not_registered_yet_question_text">Aún no estás registrado?</string>
 </resources>

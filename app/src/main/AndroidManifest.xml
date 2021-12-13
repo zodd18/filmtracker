@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.filmtracker">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_filmtracker"
@@ -9,6 +11,9 @@
         android:roundIcon="@mipmap/ic_filmtracker_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FilmTracker">
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false" />
         <activity
             android:name=".LoginActivity"
             android:exported="false" />

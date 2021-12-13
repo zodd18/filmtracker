@@ -3,5 +3,9 @@
     <string name="email_text">Email</string>
     <string name="password_text">Password</string>
     <string name="log_in_text">Log in</string>
-    <string name="not_registered_yet_text">Not registered yet? Register now!</string>
+    <string name="not_registered_yet_text">Register now!</string>
+    <string name="repeat_password_text">Repeat Password</string>
+    <string name="sign_up_text">Sign up</string>
+    <string name="already_registered_text">I already have an account. Go back to Log In.</string>
+    <string name="not_registered_yet_question_text">Not registered yet?</string>
 </resources>

@@ -7,22 +7,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-public class LoginActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
 
-    TextView tvGoToRegister;
+
+    TextView tvGoToLogin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
 
-        tvGoToRegister = findViewById(R.id.textViewGoToRegister);
-        tvGoToRegister.setOnClickListener(new View.OnClickListener() {
+        tvGoToLogin = findViewById(R.id.textViewGoToLogin);
+        tvGoToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
-
     }
 }

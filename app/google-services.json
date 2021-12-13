@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "582952554042",
+    "firebase_url": "https://film-tracker-43e82-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "film-tracker-43e82",
+    "storage_bucket": "film-tracker-43e82.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:582952554042:android:56c5b5f3216cb2a69eaf03",
+        "android_client_info": {
+          "package_name": "com.app.filmtracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "582952554042-bit7jgpat4lsne1rmiqlnigqi65spfqq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.filmtracker",
+            "certificate_hash": "7411ba3f2c8b836499e3259cd13955ca54bf2964"
+          }
+        },
+        {
+          "client_id": "582952554042-86tb70lgjs7op7kbkk2lh67pmgj7moml.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC40076jLv61nCdVUDZePqkvQZvJXXLEa4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "582952554042-86tb70lgjs7op7kbkk2lh67pmgj7moml.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
