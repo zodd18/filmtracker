@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="email_text">Correo</string>
+    <string name="password_text">Contraseña</string>
+    <string name="log_in_text">Iniciar Sesión</string>
+    <string name="not_registered_yet_text">Aún no estás registrado? Registrate ahora!</string>
+</resources>
