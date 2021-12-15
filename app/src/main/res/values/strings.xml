@@ -6,6 +6,12 @@
     <string name="not_registered_yet_text">Register now!</string>
     <string name="repeat_password_text">Repeat Password</string>
     <string name="sign_up_text">Sign up</string>
-    <string name="already_registered_text">I already have an account. Go back to Log In.</string>
+    <string name="already_registered_text">I already have an account</string>
     <string name="not_registered_yet_question_text">Not registered yet?</string>
+    <string name="register_password_not_equals">Passwords do not match</string>
+    <string name="register_bad_format_email">Write the email correctly</string>
+    <string name="register_go_back_text">Go back to Log In</string>
+    <string name="register_password_too_short">Must have at least 6 characters</string>
+    <string name="register_successful">Successfully registered</string>
+    <string name="register_failure">Registration failure. Try later.</string>
 </resources>

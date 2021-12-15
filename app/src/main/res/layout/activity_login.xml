@@ -32,7 +32,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/loginEmailField"
         android:layout_width="337dp"
-        android:layout_height="51dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:hint="@string/email_text"
         app:boxCornerRadiusTopEnd="12dp"
@@ -43,7 +43,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -51,7 +51,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/loginPasswordField"
         android:layout_width="337dp"
-        android:layout_height="51dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:hint="@string/password_text"
         app:boxCornerRadiusTopEnd="12dp"
@@ -62,13 +62,14 @@
         app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:inputType="textPassword"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/loginButtonLogIn"
         android:layout_width="337dp"
         android:layout_height="55dp"
         android:layout_marginTop="32dp"
@@ -89,7 +90,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
+        app:layout_constraintTop_toBottomOf="@+id/loginButtonLogIn" />
 
     <TextView
         android:id="@+id/textViewGoToRegister"
