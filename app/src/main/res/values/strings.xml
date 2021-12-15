@@ -14,4 +14,6 @@
     <string name="register_password_too_short">Must have at least 6 characters</string>
     <string name="register_successful">Successfully registered</string>
     <string name="register_failure">Registration failure. Try later.</string>
+    <string name="login_or">or</string>
+    <string name="login_google">Log In with Google</string>
 </resources>

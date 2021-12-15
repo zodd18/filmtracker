@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.filmtracker.poo.SingletonMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
@@ -25,6 +26,8 @@ public class RegisterActivity extends AppCompatActivity {
     //TODO: LA DOCUMENTACION FUE OBTENIDA EN:
     //TODO: General de Firebase: https://firebase.google.com/docs/android/setup?hl=es#available-libraries
     //TODO: Para Registro y login con Firebase: https://firebase.google.com/docs/auth/android/start?hl=es
+    //TODO: Para OAuth 2.0 con Google y Firebase: https://firebase.google.com/docs/auth/android/google-signin?hl=es
+
 
 
     //Firebase
@@ -43,13 +46,20 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         //Firebase
-        mAuth = FirebaseAuth.getInstance();
+        mAuth = (FirebaseAuth) SingletonMap.getInstance().get(SingletonMap.FIREBASE_AUTH_INSTANCE);
+        if(mAuth == null){
+            mAuth = FirebaseAuth.getInstance();
+            SingletonMap.getInstance().put(SingletonMap.FIREBASE_AUTH_INSTANCE, mAuth);
+        }
 
-        //Fields
+
+        //View Components
         txInputUsername = findViewById(R.id.registerEmailField);
         txInputPassword = findViewById(R.id.registerPasswordField);
         txInputConfirmPassword = findViewById(R.id.registerPasswordConfirmField);
 
+
+        //Event - Register button
         registerButton = findViewById(R.id.registerButton);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,14 +85,13 @@ public class RegisterActivity extends AppCompatActivity {
                     txInputPassword.setError(getString(R.string.register_password_too_short));
                     txInputPassword.setErrorEnabled(true);
                 } else {
-                    //createAccount(email, password);
+                    createAccount(email, password);
                 }
             }
         });
 
 
-
-        //Back to login
+        //Event - Back to login
         tvGoToLogin = findViewById(R.id.textViewGoToLogin);
         tvGoToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,11 +101,9 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
 
-
-
-
-
     }
+
+
 
     private void backToLogIn(){
         finish();

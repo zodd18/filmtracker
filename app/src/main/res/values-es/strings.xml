@@ -12,6 +12,8 @@
     <string name="register_bad_format_email">Escribe el correo correctamente</string>
     <string name="register_go_back_text">Volver a Inicio Sesión</string>
     <string name="register_password_too_short">Debe tener al menos 6 caracteres</string>
-    <string name="register_successful">Se ha registrado con éxito</string>
+    <string name="register_successful">Te has registrado con éxito</string>
     <string name="register_failure">Ha ocurrido un error. Inténtelo mas tarde.</string>
+    <string name="login_or">o</string>
+    <string name="login_google">Iniciar sesión con Google</string>
 </resources>
