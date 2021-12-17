@@ -15,5 +15,6 @@
         <!-- Customize your theme here. -->
         <!-- Si queremos meter algo aqui propio, primero debemos definirlo en attrs.xml (dentro de la carpeta values)-->
         <item name="customBgColor">?attr/colorOnPrimary</item>
+        <item name="buttonSecondaryBgColor">@color/gray_blue_900</item>
     </style>
 </resources>

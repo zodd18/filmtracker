@@ -2,4 +2,5 @@
 <resources>
     <!--Ejemplo de definicion: <attr name="customBgColor" format="reference" />-->
     <attr name="customBgColor" format="reference" />
+    <attr name="buttonSecondaryBgColor" format="reference" />
 </resources>

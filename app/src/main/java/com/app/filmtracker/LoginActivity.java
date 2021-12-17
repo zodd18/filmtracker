@@ -62,6 +62,9 @@ public class LoginActivity extends AppCompatActivity {
             SingletonMap.getInstance().put(SingletonMap.FIREBASE_AUTH_INSTANCE, mAuth);
         }
 
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        checkLoggedUserAndGoNextActivity(currentUser);
+
 
         //OAuth 2.0 GOOGLE
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -120,19 +123,14 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            //Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Te has logeado(debug).",
                                     Toast.LENGTH_SHORT).show();
-                            //updateUI(user);
+                            checkLoggedUserAndGoNextActivity(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            //Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "NO te has logeado(debug).",
                                     Toast.LENGTH_SHORT).show();
-                            /*Toast.makeText(EmailPasswordActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();*/
-                            //updateUI(null);
                         }
                     }
                 });
@@ -155,13 +153,11 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                //Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 Toast.makeText(LoginActivity.this, "No te has logeado en google(debug).",
                         Toast.LENGTH_SHORT).show();
                 // Google Sign In failed, update UI appropriately
-                //Log.w(TAG, "Google sign in failed", e);
             }
         }
     }
@@ -174,20 +170,28 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            //Log.d(TAG, "signInWithCredential:success");
                             Toast.makeText(LoginActivity.this, "Te has logeado en google!(debug).",
                                     Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
-                            //updateUI(user);
+                            checkLoggedUserAndGoNextActivity(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Ha ocurrido un error con el token(?)(debug).",
                                     Toast.LENGTH_SHORT).show();
-                            //Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            //updateUI(null);
                         }
                     }
                 });
+    }
+
+
+    private void checkLoggedUserAndGoNextActivity(FirebaseUser user){
+        if(user!=null){
+            SingletonMap.getInstance().put(SingletonMap.FIREBASE_USER_INSTANCE, user);
+
+            Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+            finish();
+            startActivity(intent);
+        }
     }
 
 }
