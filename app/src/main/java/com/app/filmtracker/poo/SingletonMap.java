@@ -7,7 +7,7 @@ public class SingletonMap extends HashMap<String, Object> {
     //Constants
     public static final String FIREBASE_AUTH_INSTANCE = "FIREBASE_AUTH_INSTANCE";
     public static final String FIREBASE_USER_INSTANCE = "FIREBASE_USER_INSTANCE";
-    public static final String HTTP_CLIENT = "HTTP_CLIENT";
+    public static final String REQUEST_QUEUE = "REQUEST_QUEUE";
 
     //Singleton Holder
     private static class SingletonHolder {

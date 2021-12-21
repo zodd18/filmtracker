@@ -46,7 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
         imageProfile = findViewById(R.id.profileImageViewUser);
         btnProfileFilms = findViewById(R.id.profileFilms);
 
-        //Complete User data in profile layout
+        //Complete User data in profile
         tvprofileName.setText(user.getDisplayName());
 
         new DownloadImageTask().execute(user.getPhotoUrl().toString());

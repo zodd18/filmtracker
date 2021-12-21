@@ -7,13 +7,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.RequestQueue;
 import com.app.filmtracker.R;
+import com.app.filmtracker.poo.OnLoadCustomListener;
+import com.app.filmtracker.vo.Movie;
 
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomReclyclerViewAdapter.ViewHolder>{
@@ -21,18 +28,24 @@ public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomRecly
     //TODO: Ejemplo en stackOverflow: https://stackoverflow.com/questions/40587168/simple-android-grid-example-using-recyclerview-with-gridlayoutmanager-like-the
 
 
-    private List<Object> data;
+    private List<Movie> data;
     private LayoutInflater mInflater;
     //private ItemClickListener mClickListener;
 
-    //Dynamic load from
+    //Dynamic load using API Rest from TBDb
+    private int lastPage;
+    private boolean isFetching;
+    private static final int VISIBLE_THRESHOLD = 15;
+    private OnLoadCustomListener onLoadCustomListener;
 
-    public CustomReclyclerViewAdapter(Context context, List<Object> data) {
+    public CustomReclyclerViewAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
-        this.data = data;
+        this.lastPage = 1;
+        this.isFetching = false;
+        this.data = new ArrayList<>();
     }
 
-    // inflates the cell layout from xml when needed
+    // Inflates the cell layout from xml when needed
     @Override
     @NonNull
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -43,25 +56,66 @@ public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomRecly
     // binds the data to the TextView in each cell
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        //holder.myTextView.setText(this.data.get(position).toString());
+        if((position+VISIBLE_THRESHOLD)>=data.size() && !isFetching){
+            isFetching = true;
+            onLoadCustomListener.load();
+        } else {
+            holder.title.setText(this.data.get(position).getTitle());
+            holder.subtitle.setText(this.data.get(position).getOverview());
+        }
     }
 
-    // total number of cells
+
     @Override
     public int getItemCount() {
         return data.size();
     }
 
 
-    // stores and recycles views as they are scrolled off screen
+    /*public void fetchMovies(){
+        String url = "https://api.themoviedb.org/3/discover/movie?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language=es-ES&sort_by=popularity.desc&include_adult=false&include_video=false&page="+ lastPage +"&with_watch_monetization_types=flatrate";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            lastPage = response.getInt("page") + 1;
+                            JSONArray movieJsonList = response.getJSONArray("results");
+                            Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
+                            List<Movie> movList = gson.fromJson(movieJsonList.toString(), listType);
+                            movieList.addAll(movList);
+
+                            System.out.println(response.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        isFetching = false;
+                        CustomReclyclerViewAdapter.this.notifyDataSetChanged();
+                    }
+
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+                        System.out.println("------Error en el Volley");
+                        isFetching = false;
+                    }
+                });
+        requestQueue.add(jsonObjectRequest);
+    }*/
+
+    // RecyclerView with data
     public static class ViewHolder extends RecyclerView.ViewHolder  { //implements View.OnClickListener
-        ImageView image;
-        TextView title;
-        TextView subtitle;
-        TextView description;
-        Button btnTrailer;
-        ImageButton btnLike;
-        ImageButton btnShare;
+        private ImageView image;
+        private TextView title;
+        private TextView subtitle;
+        private TextView description;
+        private Button btnTrailer;
+        private ImageButton btnLike;
+        private ImageButton btnShare;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -82,9 +136,33 @@ public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomRecly
         }*/
     }
 
-    /*private fetchFilmsTMDB(){
 
-    }*/
+
+    public void setOnLoadCustomListener(OnLoadCustomListener onLoadCustomListener) {
+        this.onLoadCustomListener = onLoadCustomListener;
+        this.onLoadCustomListener.load();
+    }
+
+
+    public void addNewDataAndNotify(Collection<? extends Movie> collection){
+        this.data.addAll(collection);
+        this.setFetched();
+        this.notifyDataSetChanged();
+    }
+
+
+    public void setFetched() {
+        this.isFetching = false;
+    }
+
+    public void setLastPage(int lastPage) {
+        this.lastPage = lastPage;
+    }
+
+    public int getLastPage() {
+        return lastPage;
+    }
+
 
     // convenience method for getting data at click position
     /*Object getItem(int id) {
