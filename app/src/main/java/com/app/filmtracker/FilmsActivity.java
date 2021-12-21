@@ -16,6 +16,7 @@ import com.android.volley.toolbox.Volley;
 import com.app.filmtracker.poo.OnLoadCustomListener;
 import com.app.filmtracker.poo.SingletonMap;
 import com.app.filmtracker.reclycler.CustomReclyclerViewAdapter;
+import com.app.filmtracker.vo.Genre;
 import com.app.filmtracker.vo.Movie;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -33,6 +34,8 @@ public class FilmsActivity extends AppCompatActivity {
     RecyclerView filmsRecyclerView;
     RequestQueue requestQueue;
     Gson gson;
+    List<Genre> genresList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,18 +48,49 @@ public class FilmsActivity extends AppCompatActivity {
             SingletonMap.getInstance().put(SingletonMap.REQUEST_QUEUE, requestQueue);
         }
 
-        gson = new Gson();
-
-
         //View Components
         filmsRecyclerView = findViewById(R.id.filmsRecyclerView);
 
         //Recycler View
+        gson = new Gson();
+        fetchGenreAndThenStartRecyclerView();
+
+
+    }
+
+    private void fetchGenreAndThenStartRecyclerView(){
+        String url = "https://api.themoviedb.org/3/genre/movie/list?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language=es";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray genresJsonList = response.getJSONArray("genres");
+                            Type listType = new TypeToken<ArrayList<Genre>>(){}.getType();
+                            genresList = gson.fromJson(genresJsonList.toString(), listType);
+
+                            System.out.println(response.toString());
+                            createAndStartRecyclerView();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+                        System.out.println("------Error en el Volley");
+                    }
+                });
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    private void createAndStartRecyclerView(){
         filmsRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
-
-
-        CustomReclyclerViewAdapter adapter = new CustomReclyclerViewAdapter(this);
+        CustomReclyclerViewAdapter adapter = new CustomReclyclerViewAdapter(this, genresList);
 
         adapter.setOnLoadCustomListener(new OnLoadCustomListener() {
             @Override
@@ -91,10 +125,6 @@ public class FilmsActivity extends AppCompatActivity {
             }
         });
 
-
-
         filmsRecyclerView.setAdapter(adapter);
-
-
     }
 }

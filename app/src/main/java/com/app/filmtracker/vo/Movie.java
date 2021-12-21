@@ -4,6 +4,7 @@ public class Movie {
     private int id;
     private String overview;
     private String title;
+    private int[] genre_ids;
 
     public int getId() {
         return id;
@@ -27,5 +28,13 @@ public class Movie {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public int[] getGenre_ids() {
+        return genre_ids;
+    }
+
+    public void setGenre_ids(int[] genre_ids) {
+        this.genre_ids = genre_ids;
     }
 }

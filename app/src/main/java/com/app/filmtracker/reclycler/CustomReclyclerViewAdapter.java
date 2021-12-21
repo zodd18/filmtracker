@@ -13,15 +13,27 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.app.filmtracker.R;
 import com.app.filmtracker.poo.OnLoadCustomListener;
+import com.app.filmtracker.vo.Genre;
 import com.app.filmtracker.vo.Movie;
+import com.google.gson.reflect.TypeToken;
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomReclyclerViewAdapter.ViewHolder>{
     //TODO: DOCUMENTACION https://developer.android.com/guide/topics/ui/layout/recyclerview
@@ -29,6 +41,7 @@ public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomRecly
 
 
     private List<Movie> data;
+    private List<Genre> genres;
     private LayoutInflater mInflater;
     //private ItemClickListener mClickListener;
 
@@ -38,11 +51,12 @@ public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomRecly
     private static final int VISIBLE_THRESHOLD = 15;
     private OnLoadCustomListener onLoadCustomListener;
 
-    public CustomReclyclerViewAdapter(Context context) {
+    public CustomReclyclerViewAdapter(Context context, List<Genre> genres) {
         this.mInflater = LayoutInflater.from(context);
         this.lastPage = 1;
         this.isFetching = false;
         this.data = new ArrayList<>();
+        this.genres = genres;
     }
 
     // Inflates the cell layout from xml when needed
@@ -61,7 +75,17 @@ public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomRecly
             onLoadCustomListener.load();
         } else {
             holder.title.setText(this.data.get(position).getTitle());
-            holder.subtitle.setText(this.data.get(position).getOverview());
+            String genresResult = "";
+            for(int i : this.data.get(position).getGenre_ids()){
+                Genre gi = new Genre(i);
+                for(Genre g : genres){
+                    if(g.equals(gi)){
+                        genresResult+=g.getName()+"\n";
+                    }
+                }
+            }
+
+            holder.subtitle.setText(genresResult);
         }
     }
 
@@ -162,6 +186,7 @@ public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomRecly
     public int getLastPage() {
         return lastPage;
     }
+
 
 
     // convenience method for getting data at click position
