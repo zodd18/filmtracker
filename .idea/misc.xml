@@ -11,13 +11,16 @@
         <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/drawable/shape_rectange.xml" value="0.403125" />
         <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/drawable/shape_rectangle_top_curved.xml" value="0.403125" />
         <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/drawable/shape_rounded.xml" value="0.33" />
-        <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/layout/activity_films.xml" value="0.25" />
+        <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/layout/activity_films.xml" value="0.2" />
         <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/layout/activity_main.xml" value="0.38697916666666665" />
         <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/layout/activity_profile.xml" value="0.25" />
         <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/layout/activity_register.xml" value="0.33" />
         <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/layout/activity_welcome.xml" value="0.33" />
         <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/layout/film_card_view.xml" value="0.33" />
+        <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/layout/fragment_chat.xml" value="0.3677536231884058" />
+        <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/layout/fragment_films.xml" value="0.3729166666666667" />
+        <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/layout/fragment_profile.xml" value="0.38697916666666665" />
         <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/layout/loading_progess_bar.xml" value="0.33" />
         <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/menu/bottom_menu.xml" value="0.38697916666666665" />
         <entry key="..\:/UMA/Cuarto/Primer semestre/Software para Sistemas Empotrados y Dispositivos Moviles/wAndroidStudio/filmtracker/app/src/main/res/menu/films_bottom_menu.xml" value="0.38697916666666665" />
