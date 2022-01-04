@@ -1,4 +1,4 @@
-package com.app.filmtracker.reclycler;
+package com.app.filmtracker.recycler;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,37 +10,24 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.app.filmtracker.R;
 import com.app.filmtracker.poo.OnLoadCustomListener;
 import com.app.filmtracker.vo.Genre;
 import com.app.filmtracker.vo.Movie;
-import com.google.gson.reflect.TypeToken;
 
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomReclyclerViewAdapter.ViewHolder>{
+public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecyclerViewAdapter.ViewHolder>{
     //TODO: DOCUMENTACION https://developer.android.com/guide/topics/ui/layout/recyclerview
     //TODO: Ejemplo en stackOverflow: https://stackoverflow.com/questions/40587168/simple-android-grid-example-using-recyclerview-with-gridlayoutmanager-like-the
 
@@ -57,7 +44,7 @@ public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomRecly
     private static final int VISIBLE_THRESHOLD = 15;
     private OnLoadCustomListener onLoadCustomListener;
 
-    public CustomReclyclerViewAdapter(Context context, List<Genre> genres) {
+    public CustomRecyclerViewAdapter(Context context, List<Genre> genres) {
         this.mInflater = LayoutInflater.from(context);
         this.lastPage = 1;
         this.isFetching = false;

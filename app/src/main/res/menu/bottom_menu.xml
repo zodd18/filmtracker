@@ -5,7 +5,7 @@
         android:id="@+id/bottomMenuProfile"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_person_24"
-        android:title="Perfil"
+        android:title="@string/bottom_menu_profile"
         app:showAsAction="always" />
     <item
         android:id="@+id/bottomMenuFilms"
@@ -16,7 +16,7 @@
     <item
         android:id="@+id/bottomMenuChat"
         android:enabled="true"
-        android:icon="@drawable/ic_baseline_chat_bubble_24"
+        android:icon="@drawable/ic_baseline_favorite_24"
         android:title="Chat"
         app:showAsAction="always"/>
 </menu>

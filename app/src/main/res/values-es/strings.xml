@@ -16,4 +16,6 @@
     <string name="register_failure">Ha ocurrido un error. Inténtelo mas tarde.</string>
     <string name="login_or">o</string>
     <string name="login_google">Iniciar sesión con Google</string>
+    <string name="bottom_menu_profile">Perfil</string>
+    <string name="language">es-ES</string>
 </resources>

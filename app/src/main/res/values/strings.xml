@@ -17,5 +17,6 @@
     <string name="login_or">or</string>
     <string name="login_google">Log In with Google</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="bottom_menu_profile">Profile</string>
+    <string name="language">en</string>
 </resources>

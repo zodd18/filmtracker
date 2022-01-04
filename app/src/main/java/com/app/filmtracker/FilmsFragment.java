@@ -18,7 +18,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.app.filmtracker.poo.OnLoadCustomListener;
 import com.app.filmtracker.poo.SingletonMap;
-import com.app.filmtracker.reclycler.CustomReclyclerViewAdapter;
+import com.app.filmtracker.recycler.CustomRecyclerViewAdapter;
 import com.app.filmtracker.vo.Genre;
 import com.app.filmtracker.vo.Movie;
 import com.google.gson.Gson;
@@ -120,7 +120,7 @@ public class FilmsFragment extends Fragment {
 
 
     private void fetchGenreAndThenStartRecyclerView(){
-        String url = "https://api.themoviedb.org/3/genre/movie/list?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language=es";
+        String url = "https://api.themoviedb.org/3/genre/movie/list?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language=" + R.string.language;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -151,12 +151,12 @@ public class FilmsFragment extends Fragment {
     private void createAndStartRecyclerView(){
         filmsRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2)); //new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-        CustomReclyclerViewAdapter adapter = new CustomReclyclerViewAdapter(getActivity(), genresList);
+        CustomRecyclerViewAdapter adapter = new CustomRecyclerViewAdapter(getActivity(), genresList);
 
         adapter.setOnLoadCustomListener(new OnLoadCustomListener() {
             @Override
             public void load() {
-                String url = "https://api.themoviedb.org/3/discover/movie?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language=es-ES&sort_by=popularity.desc&include_adult=false&include_video=false&page="+ adapter.getLastPage() +"&with_watch_monetization_types=flatrate";
+                String url = "https://api.themoviedb.org/3/discover/movie?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language="+ R.string.language +"&sort_by=popularity.desc&include_adult=false&include_video=false&page="+ adapter.getLastPage() +"&with_watch_monetization_types=flatrate";
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                         (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                             @Override
