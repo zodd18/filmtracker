@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FilmTracker">
         <activity
-            android:name=".FilmsActivity"
+            android:name=".PrincipalActivity"
             android:exported="false" />
         <activity
             android:name=".ProfileActivity"

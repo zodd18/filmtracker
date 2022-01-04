@@ -40,19 +40,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilmsActivity extends AppCompatActivity {
+public class PrincipalActivity extends AppCompatActivity {
 
     //View Components
-    RecyclerView filmsRecyclerView;
-    //ProgressBar filmsProgressBar;
     NavigationBarView navigationBarView;
-
-    //Android Volley
-    RequestQueue requestQueue;
-    Gson gson;
-
-    //Data
-    List<Genre> genresList;
 
     //Fragments
     ProfileFragment profileFragment;
@@ -64,30 +55,16 @@ public class FilmsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_films);
 
-        //Android Volley
-        requestQueue = (RequestQueue) SingletonMap.getInstance().get(SingletonMap.REQUEST_QUEUE);
-        if(requestQueue == null){
-            requestQueue = Volley.newRequestQueue(getApplicationContext());
-            SingletonMap.getInstance().put(SingletonMap.REQUEST_QUEUE, requestQueue);
-        }
-
-        //View Components
-        //filmsRecyclerView = findViewById(R.id.filmsRecyclerView);
-        //filmsProgressBar = findViewById(R.id.filmsProgressBar);
-        //filmsProgressBar.setIndeterminate(true);
-        //filmsProgressBar.onVisibilityAggregated(true);
-
         //Fragments
         profileFragment = new ProfileFragment();
         filmsFragment = new FilmsFragment();
         chatFragment = new ChatFragment();
 
-        //Recycler View
-        gson = new Gson();
-        //fetchGenreAndThenStartRecyclerView();
-
         //Bottom Menu
         navigationBarView = findViewById(R.id.MainBottomNavigation);
+
+        loadFragment(filmsFragment);
+        navigationBarView.setSelectedItemId(R.id.bottomMenuFilms);
         navigationBarView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -116,7 +93,7 @@ public class FilmsActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    private void fetchGenreAndThenStartRecyclerView(){
+   /* private void fetchGenreAndThenStartRecyclerView(){
         String url = "https://api.themoviedb.org/3/genre/movie/list?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language=es";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -184,7 +161,7 @@ public class FilmsActivity extends AppCompatActivity {
         });
 
         filmsRecyclerView.setAdapter(adapter);
-    }
+    }*/
 
 
 
