@@ -16,9 +16,9 @@
     <ImageView
         android:id="@+id/filmCardImage"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/img2" />
+        app:srcCompat="@drawable/ic_google_foreground" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,6 +33,7 @@
             android:id="@+id/filmCardTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="70dp"
             android:text="Titulo"
             android:textAppearance="?attr/textAppearanceHeadline6" />
 
@@ -41,7 +42,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Texto secondario (Genero)"
+            android:minHeight="80dp"
+            android:text="Texto secondario (Generos)"
             android:textAppearance="?attr/textAppearanceBody2"
             android:textColor="?android:attr/textColorSecondary" />
 
@@ -93,13 +95,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ver más" />
-            <!--<<ImageButton
-                android:id="@+id/filmCardButtonLike"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_favorite_24" />
 
             <ImageButton
+                android:id="@+id/filmCardButtonLike"
+                style="?attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:minWidth="40dip"
+                android:minHeight="20dip"
+                android:src="@drawable/ic_baseline_favorite_24" />
+
+            <!--<ImageButton
                 android:id="@+id/filmCardButtonShare"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

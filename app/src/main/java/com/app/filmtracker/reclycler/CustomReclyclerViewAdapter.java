@@ -1,6 +1,9 @@
 package com.app.filmtracker.reclycler;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +32,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomReclyclerViewAdapter.ViewHolder>{
@@ -41,6 +46,7 @@ public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomRecly
 
 
     private List<Movie> data;
+    private Map<Integer, Bitmap> movieImages;
     private List<Genre> genres;
     private LayoutInflater mInflater;
     //private ItemClickListener mClickListener;
@@ -74,6 +80,7 @@ public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomRecly
             isFetching = true;
             onLoadCustomListener.load();
         } else {
+            holder.image.setImageBitmap(this.data.get(position).getImage());
             holder.title.setText(this.data.get(position).getTitle());
             String genresResult = "";
             for(int i : this.data.get(position).getGenre_ids()){
@@ -169,6 +176,9 @@ public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomRecly
 
 
     public void addNewDataAndNotify(Collection<? extends Movie> collection){
+        for(Movie m : collection){
+            new DownloadImageTask().execute(m, ("https://image.tmdb.org/t/p/w500/"+m.getPoster_path()));
+        }
         this.data.addAll(collection);
         this.setFetched();
         this.notifyDataSetChanged();
@@ -187,6 +197,31 @@ public class CustomReclyclerViewAdapter extends RecyclerView.Adapter<CustomRecly
         return lastPage;
     }
 
+
+
+    private class DownloadImageTask extends AsyncTask<Object, Void, Bitmap> {
+        private Movie thisMovie;
+
+        @Override
+        protected Bitmap doInBackground(Object... objects) {
+            this.thisMovie = (Movie) objects[0];
+            String urldisplay = objects[1].toString();
+            Bitmap movieImage = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                movieImage = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return movieImage;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            this.thisMovie.setImage(bitmap);
+            notifyDataSetChanged();
+        }
+    }
 
 
     // convenience method for getting data at click position
