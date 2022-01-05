@@ -218,7 +218,7 @@ public class LoginActivity extends AppCompatActivity {
         if(user!=null){
             SingletonMap.getInstance().put(SingletonMap.FIREBASE_USER_INSTANCE, user);
 
-            Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+            Intent intent = new Intent(LoginActivity.this, PrincipalActivity.class);
             finish();
             startActivity(intent);
         }

@@ -46,8 +46,11 @@ public class PrincipalActivity extends AppCompatActivity {
         topMenu = findViewById(R.id.principalTopMenu);
 
         //Bottom Menu
-        loadFragment(filmsFragment);
-        navigationBarView.setSelectedItemId(R.id.bottomMenuFilms);
+
+        // Default fragment: profileFragment
+        loadFragment(profileFragment);
+        navigationBarView.setSelectedItemId(R.id.bottomMenuProfile);
+
         navigationBarView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -61,7 +64,6 @@ public class PrincipalActivity extends AppCompatActivity {
                     case R.id.bottomMenuLikes:
                         loadFragment(likesFragment);
                         return true;
-
                 }
                 return false;
             }
