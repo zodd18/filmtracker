@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -90,4 +91,10 @@ public class PrincipalActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    public void loadFragmentWithMotion(Fragment fragment, View view){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.addSharedElement(view, "shared_container");
+        fragmentTransaction.replace(R.id.mainFrameContainer, fragment);
+        fragmentTransaction.commit();
+    }
 }

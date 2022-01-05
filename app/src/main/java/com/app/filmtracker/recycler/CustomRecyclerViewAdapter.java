@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecyclerViewAdapter.ViewHolder>{
+public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecyclerViewAdapter.ViewHolder> implements View.OnClickListener {
     //TODO: DOCUMENTACION https://developer.android.com/guide/topics/ui/layout/recyclerview
     //TODO: Ejemplo en stackOverflow: https://stackoverflow.com/questions/40587168/simple-android-grid-example-using-recyclerview-with-gridlayoutmanager-like-the
 
@@ -36,6 +36,8 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     private Map<Integer, Bitmap> movieImages;
     private List<Genre> genres;
     private LayoutInflater mInflater;
+    private View.OnClickListener onClickListener;
+
     //private ItemClickListener mClickListener;
 
     //Dynamic load using API Rest from TBDb
@@ -57,6 +59,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     @NonNull
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.film_card_view, parent, false);
+        view.setOnClickListener(this);
         return new ViewHolder(view);
     }
 
@@ -208,6 +211,18 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
             this.thisMovie.setImage(bitmap);
             notifyDataSetChanged();
         }
+    }
+
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
+
+
+
+    @Override
+    public void onClick(View view) {
+        if(this.onClickListener!=null)
+            onClickListener.onClick(view);
     }
 
 

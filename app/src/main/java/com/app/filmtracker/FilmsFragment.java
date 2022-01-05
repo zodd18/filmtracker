@@ -2,11 +2,14 @@ package com.app.filmtracker;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -109,6 +112,8 @@ public class FilmsFragment extends Fragment {
 
         //Recycler View
         filmsRecyclerView = view.findViewById(R.id.filmsRecyclerView);
+
+
         genresList = new ArrayList<>();
         gson = new Gson();
         fetchGenreAndThenStartRecyclerView();
@@ -153,6 +158,7 @@ public class FilmsFragment extends Fragment {
 
         CustomRecyclerViewAdapter adapter = new CustomRecyclerViewAdapter(getActivity(), genresList);
 
+        //Fetch data
         adapter.setOnLoadCustomListener(new OnLoadCustomListener() {
             @Override
             public void load() {
@@ -186,6 +192,17 @@ public class FilmsFragment extends Fragment {
             }
         });
 
+        //OnClick event
+        adapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
         filmsRecyclerView.setAdapter(adapter);
     }
+
+
+
 }
