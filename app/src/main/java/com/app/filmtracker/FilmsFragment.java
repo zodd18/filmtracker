@@ -1,5 +1,8 @@
 package com.app.filmtracker;
 
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,6 +28,7 @@ import com.app.filmtracker.poo.SingletonMap;
 import com.app.filmtracker.recycler.CustomRecyclerViewAdapter;
 import com.app.filmtracker.vo.Genre;
 import com.app.filmtracker.vo.Movie;
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -112,8 +117,6 @@ public class FilmsFragment extends Fragment {
 
         //Recycler View
         filmsRecyclerView = view.findViewById(R.id.filmsRecyclerView);
-
-
         genresList = new ArrayList<>();
         gson = new Gson();
         fetchGenreAndThenStartRecyclerView();
@@ -196,7 +199,15 @@ public class FilmsFragment extends Fragment {
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                System.out.println("Se ha seleccionado uno");
+                Intent intent = new Intent(getContext(), FilmsDetailsActivity.class);
+                startActivity(intent);
+                /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, "shared_container").toBundle();
+                    startActivity(intent, bundle);
+                } else {
+                    startActivity(intent);
+                }*/
             }
         });
 
