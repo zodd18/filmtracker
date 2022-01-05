@@ -1,63 +1,54 @@
 package com.app.filmtracker;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.app.filmtracker.poo.SingletonMap;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.io.InputStream;
+
 public class ProfileFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    //Firebase
+    FirebaseAuth mAuth;
+    FirebaseUser user;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    //View Components
+    Button button;
+    Button btnProfileFilms;
+    TextView tvprofileName, favoriteFilms, watchedFilms, comments;
+    ImageView imageProfile;
 
     public ProfileFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
 
     }
-
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,8 +56,125 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
+        //FirebaseAuth
+        mAuth = (FirebaseAuth) SingletonMap.getInstance().get(SingletonMap.FIREBASE_AUTH_INSTANCE);
+        user = (FirebaseUser) SingletonMap.getInstance().get(SingletonMap.FIREBASE_USER_INSTANCE);
 
+        //View Components
+        tvprofileName = view.findViewById(R.id.profileName);
+        imageProfile = view.findViewById(R.id.profileImageViewUser);
+        btnProfileFilms = view.findViewById(R.id.profileFilms);
+        favoriteFilms = view.findViewById(R.id.textFavoriteFilms);
+        watchedFilms = view.findViewById(R.id.textWatchedFilms);
+        comments = view.findViewById(R.id.textComments);
+
+        //Complete User data in profile
+        tvprofileName.setText(user.getDisplayName());
+
+        // Download image
+        try {
+            new DownloadImageTask().execute(user.getPhotoUrl().toString());
+        } catch (Exception e) {
+            // Null image
+        }
+
+        //Events - Log Out
+        button = view.findViewById(R.id.profileButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logOut();
+            }
+        });
+
+        // Info
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        // Watched/Rated films
+        db.collection("Rating")
+                .whereEqualTo("user_id", user.getEmail())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            // Print query
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("Rating", document.getId() + " => " + document.getData());
+                            }
+                            watchedFilms.setText(String.valueOf(task.getResult().size()));
+                        } else {
+                            Log.w("TAG", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+
+        db.collection("Favorite")
+                .whereEqualTo("user_id", user.getEmail())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            // Print query
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("Favorite", document.getId() + " => " + document.getData());
+                            }
+
+                            favoriteFilms.setText(String.valueOf(task.getResult().size()));
+                        } else {
+                            Log.w("TAG", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+
+        db.collection("Comment")
+                .whereEqualTo("user_id", user.getEmail())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            // Print query
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("Comment", document.getId() + " => " + document.getData());
+                            }
+
+                            comments.setText(String.valueOf(task.getResult().size()));
+                        } else {
+                            Log.w("TAG", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
 
         return view;
+    }
+
+    protected class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+
+        @Override
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap iconProfile = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                iconProfile = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return iconProfile;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            imageProfile.setImageBitmap(bitmap);
+        }
+    }
+
+    public void logOut(){
+        mAuth.signOut();
+        getActivity().finish();
     }
 }
