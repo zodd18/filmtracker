@@ -7,56 +7,56 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <!-- Media -->
-    <ImageView
-        android:id="@+id/filmCardImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/ic_google_foreground" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="16dp"
-        android:paddingTop="16dp"
-        android:paddingRight="16dp">
+        android:orientation="vertical">
 
-        <!-- Title, secondary and supporting text -->
-        <TextView
-            android:id="@+id/filmCardTitle"
+        <!-- Media -->
+        <ImageView
+            android:id="@+id/filmCardImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="70dp"
-            android:text="Titulo"
-            android:textAppearance="?attr/textAppearanceHeadline6" />
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_google_foreground" />
 
-        <TextView
-            android:id="@+id/filmCardSubtitle"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:minHeight="80dp"
-            android:text="Texto secondario (Generos)"
-            android:textAppearance="?attr/textAppearanceBody2"
-            android:textColor="?android:attr/textColorSecondary" />
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingRight="16dp">
 
-        <RatingBar
-            android:id="@+id/ratingBar"
-            style="?android:attr/ratingBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:paddingTop="8dp"
-            android:rating="2.5" />
+            <!-- Title, secondary and supporting text -->
+            <TextView
+                android:id="@+id/filmCardTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp"
+                android:text="Titulo"
+                android:textAppearance="?attr/textAppearanceHeadline6" />
 
-        <!--<TextView
+            <TextView
+                android:id="@+id/filmCardSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:minHeight="80dp"
+                android:text="Texto secondario (Generos)"
+                android:textAppearance="?attr/textAppearanceBody2"
+                android:textColor="?android:attr/textColorSecondary" />
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:paddingTop="8dp"
+                android:rating="2.5" />
+
+            <!--<TextView
             android:id="@+id/filmCardDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,59 +65,59 @@
             android:textAppearance="?attr/textAppearanceBody2"
             android:textColor="?android:attr/textColorSecondary" />-->
 
-    </LinearLayout>
-
-    <!-- Buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-
         </LinearLayout>
 
+        <!-- Buttons -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/filmCardButtonTrailer"
-                style="?attr/borderlessButtonStyle"
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ver más" />
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/filmCardButtonLike"
-                style="?attr/borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:minWidth="40dip"
-                android:minHeight="20dip"
-                android:src="@drawable/ic_baseline_favorite_24" />
+                <Button
+                    android:id="@+id/filmCardButtonTrailer"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ver más" />
 
-            <!--<ImageButton
+                <ImageButton
+                    android:id="@+id/filmCardButtonLike"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:minWidth="40dip"
+                    android:minHeight="20dip"
+                    android:src="@drawable/ic_baseline_favorite_24" />
+
+                <!--<ImageButton
                 android:id="@+id/filmCardButtonShare"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:src="@drawable/ic_baseline_share_24" />-->
+            </LinearLayout>
+
+
         </LinearLayout>
 
 
     </LinearLayout>
-
-
-
-</LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
