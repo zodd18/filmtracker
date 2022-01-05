@@ -111,6 +111,7 @@ public class ProfileFragment extends Fragment {
                     }
                 });
 
+        // Favorite films
         db.collection("Favorite")
                 .whereEqualTo("user_id", user.getEmail())
                 .get()
@@ -130,6 +131,7 @@ public class ProfileFragment extends Fragment {
                     }
                 });
 
+        // Comments
         db.collection("Comment")
                 .whereEqualTo("user_id", user.getEmail())
                 .get()
