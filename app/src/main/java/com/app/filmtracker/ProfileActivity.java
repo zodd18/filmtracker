@@ -48,7 +48,11 @@ public class ProfileActivity extends AppCompatActivity {
         //Complete User data in profile
         tvprofileName.setText(user.getDisplayName());
 
-        new DownloadImageTask().execute(user.getPhotoUrl().toString());
+        try {
+            new DownloadImageTask().execute(user.getPhotoUrl().toString());
+        } catch (Exception e) {
+            // Null image
+        }
 
         //Events - Log Out
         button = findViewById(R.id.profileButton);
