@@ -18,4 +18,6 @@
     <string name="login_google">Iniciar sesión con Google</string>
     <string name="bottom_menu_profile">Perfil</string>
     <string name="language">es-ES</string>
+    <string name="bottom_menu_likes">Favoritos</string>
+    <string name="bottom_menu_films">Peliculas</string>
 </resources>

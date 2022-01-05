@@ -19,4 +19,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="bottom_menu_profile">Profile</string>
     <string name="language">en</string>
+    <string name="bottom_menu_likes">Likes</string>
+    <string name="bottom_menu_films">Films</string>
 </resources>

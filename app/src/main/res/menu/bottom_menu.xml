@@ -11,12 +11,12 @@
         android:id="@+id/bottomMenuFilms"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_local_movies_24"
-        android:title="Peliculas"
+        android:title="@string/bottom_menu_films"
         app:showAsAction="always"/>
     <item
-        android:id="@+id/bottomMenuChat"
+        android:id="@+id/bottomMenuLikes"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_favorite_24"
-        android:title="Chat"
+        android:title="@string/bottom_menu_likes"
         app:showAsAction="always"/>
 </menu>

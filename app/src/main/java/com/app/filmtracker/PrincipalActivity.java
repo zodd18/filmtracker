@@ -23,7 +23,7 @@ public class PrincipalActivity extends AppCompatActivity {
     //Fragments
     ProfileFragment profileFragment;
     FilmsFragment filmsFragment;
-    ChatFragment chatFragment;
+    LikesFragment likesFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class PrincipalActivity extends AppCompatActivity {
         //Fragments
         profileFragment = new ProfileFragment();
         filmsFragment = new FilmsFragment();
-        chatFragment = new ChatFragment();
+        likesFragment = new LikesFragment();
 
         //Bottom Menu
         navigationBarView = findViewById(R.id.MainBottomNavigation);
@@ -50,8 +50,8 @@ public class PrincipalActivity extends AppCompatActivity {
                     case R.id.bottomMenuFilms:
                         loadFragment(filmsFragment);
                         return true;
-                    case R.id.bottomMenuChat:
-                        loadFragment(chatFragment);
+                    case R.id.bottomMenuLikes:
+                        loadFragment(likesFragment);
                         return true;
 
                 }
