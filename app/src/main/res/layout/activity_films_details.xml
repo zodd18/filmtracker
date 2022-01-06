@@ -8,12 +8,98 @@
     tools:context=".FilmsDetailsActivity">
 
     <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hola jaja"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/detailsGenres"
+        android:layout_width="356dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:minHeight="80dp"
+        android:text="Texto secondario (Generos)"
+        android:textAlignment="center"
+        android:textAppearance="?attr/textAppearanceBody2"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.428"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsButtonLike" />
+
+    <TextView
+        android:id="@+id/detailsTitle"
+        android:layout_width="387dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="16dp"
+        android:minHeight="70dp"
+        android:text="Titulo"
+        android:textAlignment="center"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/detailsTitle2"
+        android:layout_width="299dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="24dp"
+        android:minHeight="70dp"
+        android:text="@string/text_details_synopsis"
+        android:textAlignment="center"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsGenres" />
+
+    <ImageButton
+        android:id="@+id/detailsButtonLike"
+        style="?attr/borderlessButtonStyle"
+        android:layout_width="42dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="124dp"
+        android:minWidth="40dip"
+        android:minHeight="20dip"
+        android:src="@drawable/ic_baseline_favorite_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsFilmImage" />
+
+    <RatingBar
+        android:id="@+id/detailsRatingBar"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:numStars="5"
+        android:paddingTop="8dp"
+        android:rating="0"
+        app:layout_constraintEnd_toStartOf="@+id/detailsButtonLike"
+        app:layout_constraintHorizontal_bias="0.933"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsFilmImage" />
+
+    <TextView
+        android:id="@+id/detailsDescription"
+        android:layout_width="359dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Descripción"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.533"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsTitle2"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/detailsFilmImage"
+        android:layout_width="277dp"
+        android:layout_height="266dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailsTitle"
+        app:srcCompat="@drawable/ic_baseline_local_movies_24" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

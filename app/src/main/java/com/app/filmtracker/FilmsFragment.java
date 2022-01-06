@@ -137,6 +137,7 @@ public class FilmsFragment extends Fragment {
                             JSONArray genresJsonList = response.getJSONArray("genres");
                             Type listType = new TypeToken<ArrayList<Genre>>(){}.getType();
                             genresList = gson.fromJson(genresJsonList.toString(), listType);
+                            SingletonMap.getInstance().put(SingletonMap.GENRES, genresList);
 
                             System.out.println(response.toString());
                             createAndStartRecyclerView();
@@ -177,7 +178,7 @@ public class FilmsFragment extends Fragment {
                                     List<Movie> movList = gson.fromJson(movieJsonList.toString(), listType);
                                     adapter.addNewDataAndNotify(movList);
 
-                                    System.out.println(response.toString());
+                                    System.out.println(response);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -196,20 +197,20 @@ public class FilmsFragment extends Fragment {
         });
 
         //OnClick event
-        adapter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                System.out.println("Se ha seleccionado uno");
-                Intent intent = new Intent(getContext(), FilmsDetailsActivity.class);
-                startActivity(intent);
-                /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, "shared_container").toBundle();
-                    startActivity(intent, bundle);
-                } else {
-                    startActivity(intent);
-                }*/
-            }
-        });
+//        adapter.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                System.out.println("Se ha seleccionado uno");
+//                Intent intent = new Intent(getContext(), FilmsDetailsActivity.class);
+//                startActivity(intent);
+//                /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                    Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, "shared_container").toBundle();
+//                    startActivity(intent, bundle);
+//                } else {
+//                    startActivity(intent);
+//                }*/
+//            }
+//        });
 
         filmsRecyclerView.setAdapter(adapter);
     }

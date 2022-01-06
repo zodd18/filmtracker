@@ -19,9 +19,11 @@
     <string name="bottom_menu_profile">Perfil</string>
     <string name="language">es-ES</string>
     <string name="bottom_menu_likes">Favoritos</string>
-    <string name="bottom_menu_films">Peliculas</string>
+    <string name="bottom_menu_films">Películas</string>
     <string name="text_watched_films">Películas vistas</string>
     <string name="text_favorite_films">Películas favoritas</string>
     <string name="text_comments">Comentarios</string>
     <string name="button_logout">Cerrar sesión</string>
+    <string name="text_details_synopsis">Sinopsis</string>
+    <string name="text_card_about">VER MÁS</string>
 </resources>

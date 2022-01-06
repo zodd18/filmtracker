@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:numStars="5"
                 android:paddingTop="8dp"
-                android:rating="2.5" />
+                android:rating="0" />
 
             <!--<TextView
             android:id="@+id/filmCardDescription"
@@ -91,11 +91,11 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/filmCardButtonTrailer"
+                    android:id="@+id/filmCardButtonAbout"
                     style="?attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ver más" />
+                    android:text="@string/text_card_about" />
 
                 <ImageButton
                     android:id="@+id/filmCardButtonLike"

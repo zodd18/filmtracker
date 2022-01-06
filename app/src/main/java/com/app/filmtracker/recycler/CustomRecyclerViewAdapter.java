@@ -1,29 +1,47 @@
 package com.app.filmtracker.recycler;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.app.filmtracker.FilmsDetailsActivity;
 import com.app.filmtracker.R;
 import com.app.filmtracker.poo.OnLoadCustomListener;
+import com.app.filmtracker.poo.SingletonMap;
 import com.app.filmtracker.vo.Genre;
 import com.app.filmtracker.vo.Movie;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +55,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     private List<Genre> genres;
     private LayoutInflater mInflater;
     private View.OnClickListener onClickListener;
+    private Context ctx;
 
     //private ItemClickListener mClickListener;
 
@@ -47,6 +66,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     private OnLoadCustomListener onLoadCustomListener;
 
     public CustomRecyclerViewAdapter(Context context, List<Genre> genres) {
+        this.ctx = context;
         this.mInflater = LayoutInflater.from(context);
         this.lastPage = 1;
         this.isFetching = false;
@@ -65,12 +85,22 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
     // binds the data to the TextView in each cell
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         if((position+VISIBLE_THRESHOLD)>=data.size() && !isFetching){
             isFetching = true;
             onLoadCustomListener.load();
         } else {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            // --------------- Image ---------------
+
             holder.image.setImageBitmap(this.data.get(position).getImage());
+
+            // --------------- END of Image ---------------
+
+
+            // --------------- Title and Genres ---------------
+
             holder.title.setText(this.data.get(position).getTitle());
             String genresResult = "";
             for(int i : this.data.get(position).getGenre_ids()){
@@ -81,11 +111,152 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
                     }
                 }
             }
-
             holder.subtitle.setText(genresResult);
+
+            // --------------- END of Title and Genres ---------------
+
+
+            // --------------- Film Rating ---------------
+
+            db.collection("Rating")
+                    .whereEqualTo("film_id", String.valueOf(this.data.get(position).getId()))
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            float sum = 0;
+                            float ratings = 0;
+
+                            if (task.isSuccessful()) {
+
+                                // Print query
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Log.d("FILM RATING", document.getId() + " => " + document.getData());
+                                    Double puntuation = document.getData().get("puntuation") == null ? null : Double.parseDouble(document.getData().get("puntuation").toString());
+                                    if (puntuation != null) {
+                                        sum += puntuation;
+                                        ratings++;
+                                    }
+                                }
+                            } else {
+                                Log.w("TAG", "Error getting documents.", task.getException());
+                            }
+
+                            if (ratings == 0)
+                                holder.ratingBar.setRating(0);
+                            else {
+                                System.out.println("SUM: " + sum + ", RATINGS: " + ratings);
+                                holder.ratingBar.setRating(sum/ratings/2);
+                            }
+                        }
+                    });
+
+            // --------------- END of Film Rating ---------------
+
+
+            // --------------- Like btn ---------------
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            Color likeBtnColor = Color.valueOf(Color.rgb(233, 30, 99));
+            Color likeBtnColorOff = Color.valueOf(Color.rgb(117, 117, 117));
+            db.collection("Favorite")
+                    .whereEqualTo("user_id", user.getEmail())
+                    .whereEqualTo("film_id", String.valueOf(this.data.get(position).getId()))
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+
+                                if (task.getResult().size() > 0)
+                                    holder.btnLike.setColorFilter(likeBtnColor.toArgb());
+                            } else {
+                                Log.w("TAG", "Error getting documents.", task.getException());
+                            }
+                        }
+                    });
+            holder.btnLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    db.collection("Favorite")
+                            .whereEqualTo("user_id", user.getEmail())
+                            .whereEqualTo("film_id", String.valueOf(data.get(position).getId()))
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        if (task.getResult().size() > 0) {
+                                            // Remove Favorite
+                                            QueryDocumentSnapshot doc = task.getResult().iterator().next();
+                                            db.collection("Favorite")
+                                                    .document(doc.getId())
+                                                    .delete()
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            holder.btnLike.setColorFilter(likeBtnColorOff.toArgb());
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.w("ERROR", "Error deleting document Favorite", e);
+                                                        }
+                                                    });
+                                        } else {
+                                            // Favorite
+                                            Map<String, Object> favorite = new HashMap<>();
+                                            favorite.put("user_id", user.getEmail());
+                                            favorite.put("film_id", String.valueOf(data.get(position).getId()));
+
+                                            // Add favorite to database
+                                            db.collection("Favorite").document()
+                                                    .set(favorite)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            holder.btnLike.setColorFilter(likeBtnColor.toArgb());
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.w("ERROR", "Error writing document", e);
+                                                        }
+                                                    });
+                                        }
+
+                                    } else {
+                                        Log.w("TAG", "Error getting documents.", task.getException());
+                                    }
+                                }
+                            });
+                }
+            });
+
+            // --------------- END of Like btn ---------------
+
+
+            // --------------- About ---------------
+
+            View.OnClickListener detailsListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println("Se ha seleccionado uno");
+                    Intent intent = new Intent(ctx, FilmsDetailsActivity.class);
+                    ctx.startActivity(intent);
+
+                    Map<String, Object> movie = new HashMap<>();
+                    SingletonMap.getInstance().put(SingletonMap.CURRENT_FILM_DETAILS, data.get(position));
+                }
+            };
+            holder.btnAbout.setOnClickListener(detailsListener);
+            holder.card.setOnClickListener(detailsListener);
+
+            // --------------- END of About ---------------
         }
     }
-
 
     @Override
     public int getItemCount() {
@@ -133,19 +304,23 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
         private ImageView image;
         private TextView title;
         private TextView subtitle;
+        private RatingBar ratingBar;
         private TextView description;
-        private Button btnTrailer;
+        private Button btnAbout;
         private ImageButton btnLike;
         private ImageButton btnShare;
+        private CardView card;
 
         ViewHolder(View itemView) {
             super(itemView);
-
+            btnLike = itemView.findViewById(R.id.filmCardButtonLike);
+            ratingBar = itemView.findViewById(R.id.ratingBar);
             image = itemView.findViewById(R.id.filmCardImage);
             title = itemView.findViewById(R.id.filmCardTitle);
             subtitle = itemView.findViewById(R.id.filmCardSubtitle);
             //description = itemView.findViewById(R.id.filmCardDescription);
-            btnTrailer = itemView.findViewById(R.id.filmCardButtonTrailer);
+            btnAbout = itemView.findViewById(R.id.filmCardButtonAbout);
+            card = itemView.findViewById(R.id.card);
             //btnLike = itemView.findViewById(R.id.filmCardButtonLike);
             //btnShare = itemView.findViewById(R.id.filmCardButtonShare);
 

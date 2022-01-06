@@ -8,6 +8,8 @@ public class SingletonMap extends HashMap<String, Object> {
     public static final String FIREBASE_AUTH_INSTANCE = "FIREBASE_AUTH_INSTANCE";
     public static final String FIREBASE_USER_INSTANCE = "FIREBASE_USER_INSTANCE";
     public static final String REQUEST_QUEUE = "REQUEST_QUEUE";
+    public static final String CURRENT_FILM_DETAILS = "CURRENT_FILM_DETAILS";
+    public static final String GENRES = "GENRES";
 
     //Singleton Holder
     private static class SingletonHolder {

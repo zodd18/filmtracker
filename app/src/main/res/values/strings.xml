@@ -27,4 +27,6 @@
     <string name="text_favorite_films">Favorite  films</string>
     <string name="text_comments">Comments</string>
     <string name="button_logout">Log out</string>
+    <string name="text_details_synopsis">Synopsis</string>
+    <string name="text_card_about">ABOUT</string>
 </resources>
