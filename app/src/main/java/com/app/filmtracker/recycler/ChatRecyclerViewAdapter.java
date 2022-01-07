@@ -75,8 +75,11 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         else
             name = data.get(position).getUsername();
         holder.chatItemUserName.setText(name);
-        if(data.get(position).getHas_image())
-            new ChargeImageProfileFireStorage().execute(data.get(position).getEmail(), holder);
+
+        if(data.get(position).getProfileImage()!=null)
+            holder.chatItemprofileImage.setImageBitmap(data.get(position).getProfileImage());
+        else if(data.get(position).getHas_image())
+            new ChargeImageProfileFireStorage().execute(data.get(position).getEmail(), holder, data.get(position));
     }
 
     @Override
@@ -89,11 +92,13 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
 
         private String userEmail;
         private ViewHolder holder;
+        private Friend thisFriend;
 
         @Override
         protected Void doInBackground(Object... objects) {
             this.userEmail = (String) objects[0];
             this.holder = (ViewHolder) objects [1];
+            this.thisFriend = (Friend) objects [2];
 
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageReference = storage.getReference().child(this.userEmail + "/" +"image_profile");
@@ -102,8 +107,10 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
                 @Override
                 public void onSuccess(@NonNull byte[] bytes) {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    if(bitmap!=null)
+                    if(bitmap!=null){
+                        thisFriend.setProfileImage(bitmap);
                         holder.chatItemprofileImage.setImageBitmap(bitmap);
+                    }
                 }
             });
 
