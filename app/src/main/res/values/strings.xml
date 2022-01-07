@@ -29,4 +29,20 @@
     <string name="button_logout">Log out</string>
     <string name="text_details_synopsis">Synopsis</string>
     <string name="text_card_about">ABOUT</string>
+    <string name="text_details_genres">Genre</string>
+    <string name="spinner_details_1">Appalling</string>
+    <string name="spinner_details_2">Horrible</string>
+    <string name="spinner_details_3">Very bad</string>
+    <string name="spinner_details_4">Bad</string>
+    <string name="spinner_details_5">Average</string>
+    <string name="spinner_details_6">Fine</string>
+    <string name="spinner_details_7">Good</string>
+    <string name="spinner_details_8">Very good</string>
+    <string name="spinner_details_9">Great</string>
+    <string name="spinner_details_10">Masterpiece</string>
+    <string name="spinner_details_null_rating">Have seen</string>
+    <string name="spinner_details_unwatched">Unwatched</string>
+    <string name="text_details_film_opinion">Did you like this film?</string>
+    <string name="spinner_details_watching">Watching</string>
+    <string name="spinner_details_planned_to_watch">Planned to watch</string>
 </resources>
