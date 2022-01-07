@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="70dp"
-                android:text="Titulo"
+                android:text="Title"
                 android:textAppearance="?attr/textAppearanceHeadline6" />
 
             <TextView
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:minHeight="80dp"
-                android:text="Texto secondario (Generos)"
+                android:text="Genres"
                 android:textAppearance="?attr/textAppearanceBody2"
                 android:textColor="?android:attr/textColorSecondary" />
 
