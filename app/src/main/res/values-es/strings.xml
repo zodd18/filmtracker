@@ -26,4 +26,20 @@
     <string name="button_logout">Cerrar sesión</string>
     <string name="text_details_synopsis">Sinopsis</string>
     <string name="text_card_about">VER MÁS</string>
+    <string name="text_details_genres">Género</string>
+    <string name="spinner_details_1">Pésima</string>
+    <string name="spinner_details_2">Horrible</string>
+    <string name="spinner_details_3">Muy mala</string>
+    <string name="spinner_details_4">Mala</string>
+    <string name="spinner_details_5">Promedia</string>
+    <string name="spinner_details_6">Decente</string>
+    <string name="spinner_details_7">Buena</string>
+    <string name="spinner_details_8">Muy buena</string>
+    <string name="spinner_details_9">Extraordinaria</string>
+    <string name="spinner_details_10">Obra maestra</string>
+    <string name="spinner_details_null_rating">La he visto</string>
+    <string name="spinner_details_unwatched">No la he visto</string>
+    <string name="text_details_film_opinion">¿Te ha gustado esta película?</string>
+    <string name="spinner_details_watching">La estoy viendo</string>
+    <string name="spinner_details_planned_to_watch">Tengo planeado verla</string>
 </resources>
