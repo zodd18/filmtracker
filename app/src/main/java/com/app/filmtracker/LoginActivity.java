@@ -226,7 +226,7 @@ public class LoginActivity extends AppCompatActivity {
     private void checkLoggedUserAndGoNextActivity(FirebaseUser user){
         if(user!=null){
             SingletonMap.getInstance().put(SingletonMap.FIREBASE_USER_INSTANCE, user);
-            checkUserDataSavedInFireStorage(user);
+            checkUserDataSavedInFireStore(user);
 
             Intent intent = new Intent(LoginActivity.this, PrincipalActivity.class);
             finish();
@@ -236,7 +236,7 @@ public class LoginActivity extends AppCompatActivity {
 
     //Si se registra con OAuth, es posible que aun no tengamos todos sus datos registrados
     //Comprobaremos en FireStorage si se ha guardado o no.
-    private void checkUserDataSavedInFireStorage(FirebaseUser user){
+    private void checkUserDataSavedInFireStore(FirebaseUser user){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("User")
                 .whereEqualTo("email", user.getEmail())
@@ -247,7 +247,7 @@ public class LoginActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             List<DocumentSnapshot> documents = task.getResult().getDocuments();
                             if(documents == null || documents.isEmpty())
-                                saveUserDataInFireStorage(user);
+                                saveUserDataInFireStore(user);
                         } else {
                             Toast.makeText(LoginActivity.this, "Ha ocurrido un error al cargar los datos (debug).",
                                     Toast.LENGTH_SHORT).show();
@@ -257,7 +257,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void saveUserDataInFireStorage(FirebaseUser user){
+    private void saveUserDataInFireStore(FirebaseUser user){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> userMap = new HashMap<>();
 
