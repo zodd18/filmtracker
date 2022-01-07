@@ -29,6 +29,15 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -217,11 +226,62 @@ public class LoginActivity extends AppCompatActivity {
     private void checkLoggedUserAndGoNextActivity(FirebaseUser user){
         if(user!=null){
             SingletonMap.getInstance().put(SingletonMap.FIREBASE_USER_INSTANCE, user);
+            checkUserDataSavedInFireStore(user);
 
             Intent intent = new Intent(LoginActivity.this, PrincipalActivity.class);
             finish();
             startActivity(intent);
         }
+    }
+
+    //Si se registra con OAuth, es posible que aun no tengamos todos sus datos registrados
+    //Comprobaremos en FireStorage si se ha guardado o no.
+    private void checkUserDataSavedInFireStore(FirebaseUser user){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("User")
+                .whereEqualTo("email", user.getEmail())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                            if(documents == null || documents.isEmpty())
+                                saveUserDataInFireStore(user);
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Ha ocurrido un error al cargar los datos (debug).",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+
+    private void saveUserDataInFireStore(FirebaseUser user){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> userMap = new HashMap<>();
+
+        userMap.put("email", user.getEmail());
+        if(user.getDisplayName() != null && !user.getDisplayName().isEmpty())
+            userMap.put("full_name",  user.getDisplayName());
+        else
+            userMap.put("full_name",  "");
+        userMap.put("username", user.getEmail().replace("@gmail.com", ""));
+
+
+        db.collection("User")
+                .add(userMap)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if(task.isSuccessful()){
+
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Ha ocurrido un error al guardar datos.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
 }
