@@ -45,4 +45,5 @@
     <string name="text_details_film_opinion">Did you like this film?</string>
     <string name="spinner_details_watching">Watching</string>
     <string name="spinner_details_planned_to_watch">Planned to watch</string>
+    <string name="text_comment">Comment...</string>
 </resources>

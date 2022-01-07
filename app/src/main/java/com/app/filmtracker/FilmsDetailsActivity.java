@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,6 +32,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,9 +50,12 @@ public class FilmsDetailsActivity extends AppCompatActivity {
     private TextView title, description, subtitleGenres;
     private ImageButton btnLike;
     private Spinner dropdown;
+    private ListView commentsListView;
 
     String[] spinnerSelections;
     private int initialSpinnerDisplayHasHappened = 0;
+
+    List<String> comments = new ArrayList<>();
 
     // Get movie data from SingletonMap
     private final Movie movie =
@@ -315,6 +321,47 @@ public class FilmsDetailsActivity extends AppCompatActivity {
         });
 
         // --------------- END of Like btn ---------------
+
+
+        // --------------- Comments ---------------
+
+        FilmsDetailsActivity activity = this;
+        // TODO Get current film comments
+        db.collection("Comment")
+                .whereEqualTo("film_id", String.valueOf(movie.getId()))
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            // Clear comments
+                            comments.clear();
+
+                            // Add comments to ArrayList
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("FILM RATING", document.getId() + " => " + document.getData());
+
+                                Map<String, Object> data = document.getData();
+                                String userId = (String) data.get("user_id");
+                                String description = (String) data.get("description");
+                                Timestamp date = (Timestamp) data.get("date");
+
+                                String comment = userId + " (" + new SimpleDateFormat("dd-MM-yyyy").format(date.toDate()) + "):\n" + description + "\n";
+                                comments.add(comment);
+                                comments.add(comment);
+                            }
+
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, comments);
+                            commentsListView.setAdapter(adapter);
+                        } else {
+                            Log.w("TAG", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+        // TODO Display all comments
+
+
+        // --------------- END of comments ---------------
     }
 
     private void setStars(FirebaseFirestore db, FirebaseUser user) {
@@ -376,25 +423,6 @@ public class FilmsDetailsActivity extends AppCompatActivity {
         return rating;
     }
 
-
-//    String[] spinnerSelections = new String[] {
-//            getString(R.string.spinner_details_unwatched),
-//            getString(R.string.spinner_details_planned_to_watch),
-//            getString(R.string.spinner_details_watching),
-//            getString(R.string.spinner_details_null_rating),
-//            "(10) " + getString(R.string.spinner_details_10),
-//            "(9) " + getString(R.string.spinner_details_9),
-//            "(8) " + getString(R.string.spinner_details_8),
-//            "(7) " + getString(R.string.spinner_details_7),
-//            "(6) " + getString(R.string.spinner_details_6),
-//            "(5) " + getString(R.string.spinner_details_5),
-//            "(4) " + getString(R.string.spinner_details_4),
-//            "(3) " + getString(R.string.spinner_details_3),
-//            "(2) " + getString(R.string.spinner_details_2),
-//            "(1) " + getString(R.string.spinner_details_1)
-//    };
-
-
     private void setViewComponents() {
         ratingBar = findViewById(R.id.detailsRatingBar);
         filmImage = findViewById(R.id.detailsFilmImage);
@@ -403,6 +431,7 @@ public class FilmsDetailsActivity extends AppCompatActivity {
         btnLike = findViewById(R.id.detailsButtonLike);
         subtitleGenres = findViewById(R.id.detailsGenres);
         dropdown = findViewById(R.id.detailsRatingSpinner);
+        commentsListView = findViewById(R.id.detailsListViewComments);
     }
 
 

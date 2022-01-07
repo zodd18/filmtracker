@@ -42,4 +42,5 @@
     <string name="text_details_film_opinion">¿Te ha gustado esta película?</string>
     <string name="spinner_details_watching">La estoy viendo</string>
     <string name="spinner_details_planned_to_watch">Tengo planeado verla</string>
+    <string name="text_comment">Comentar...</string>
 </resources>
