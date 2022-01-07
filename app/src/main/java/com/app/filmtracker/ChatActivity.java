@@ -2,6 +2,7 @@ package com.app.filmtracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +21,8 @@ import com.app.filmtracker.recycler.ChatRecyclerViewAdapter;
 import com.app.filmtracker.vo.Friend;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,6 +52,7 @@ public class ChatActivity extends AppCompatActivity {
     private TextView chatTextViewLoading;
     private RecyclerView recyclerView;
     private FloatingActionButton chatAddFriendButton;
+    private MaterialToolbar topMenuToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,7 @@ public class ChatActivity extends AppCompatActivity {
         chatTextViewLoading = findViewById(R.id.chatTextViewLoading);
         recyclerView = findViewById(R.id.chatRecyclerView);
         chatAddFriendButton = findViewById(R.id.chatAddFriendButton);
+        topMenuToolbar = findViewById(R.id.chatTopMenuToolbar);
 
         chatProgressBar.setVisibility(View.VISIBLE);
 
@@ -103,6 +108,13 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
 
+        //App Bar Layout - Top menu
+        topMenuToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         //Action Floating Button - Add Friends
         chatAddFriendButton.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +130,7 @@ public class ChatActivity extends AppCompatActivity {
     private void launchDialog(View customView){
         MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(ChatActivity.this);
         dialog.setView(customView);
+        dialog.setBackground(ContextCompat.getDrawable(this, R.drawable.shape_corners_curved));
         dialog.setTitle(R.string.chat_add_dialog_title);
         dialog.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
             @Override
