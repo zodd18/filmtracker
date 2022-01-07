@@ -14,7 +14,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <!-- TextView and other stuff -->
@@ -23,7 +23,7 @@
                 android:layout_width="356dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:minHeight="80dp"
+                android:minHeight="20dp"
                 android:text="Generos"
                 android:textAlignment="center"
                 android:textAppearance="?attr/textAppearanceBody2"
@@ -33,11 +33,41 @@
                 app:layout_constraintTop_toBottomOf="@+id/detailsTitle3" />
 
             <TextView
+                android:id="@+id/detailsGenres2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="56dp"
+                android:layout_marginTop="40dp"
+                android:minHeight="20dp"
+                android:text="@string/text_rating"
+                android:textAlignment="center"
+                android:textAppearance="?attr/textAppearanceBody2"
+                android:textColor="@color/teal_200"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsFilmImage" />
+
+            <TextView
+                android:id="@+id/detailsGenres3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="240dp"
+                android:layout_marginTop="40dp"
+                android:minHeight="20dp"
+                android:text="@string/text_favorite"
+                android:textAlignment="center"
+                android:textAppearance="?attr/textAppearanceBody2"
+                android:textColor="@color/pink_500"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsFilmImage" />
+
+            <TextView
                 android:id="@+id/detailsTitle"
-                android:layout_width="387dp"
+                android:layout_width="364dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:minHeight="70dp"
+                android:minHeight="20dp"
                 android:text="Titulo"
                 android:textAlignment="center"
                 android:textAppearance="?attr/textAppearanceHeadline6"
@@ -50,7 +80,7 @@
                 android:id="@+id/detailsTitle2"
                 android:layout_width="299dp"
                 android:layout_height="22dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="32dp"
                 android:minHeight="70dp"
                 android:text="@string/text_details_synopsis"
                 android:textAlignment="center"
@@ -77,6 +107,21 @@
                 app:layout_constraintTop_toBottomOf="@+id/detailsTitle4" />
 
             <TextView
+                android:id="@+id/detailsTitle5"
+                android:layout_width="299dp"
+                android:layout_height="22dp"
+                android:layout_marginTop="40dp"
+                android:minHeight="70dp"
+                android:text="@string/text_comments"
+                android:textAlignment="center"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsDescription" />
+
+            <TextView
                 android:id="@+id/detailsTitle4"
                 android:layout_width="178dp"
                 android:layout_height="wrap_content"
@@ -97,12 +142,14 @@
                 style="?attr/borderlessButtonStyle"
                 android:layout_width="42dp"
                 android:layout_height="23dp"
-                android:layout_marginTop="36dp"
-                android:layout_marginEnd="124dp"
+                android:layout_marginTop="38dp"
+                android:layout_marginEnd="48dp"
                 android:minWidth="40dip"
                 android:minHeight="20dip"
                 android:src="@drawable/ic_baseline_favorite_24"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/detailsGenres3"
                 app:layout_constraintTop_toBottomOf="@+id/detailsFilmImage" />
 
             <RatingBar
@@ -110,13 +157,12 @@
                 style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="34dp"
                 android:numStars="5"
                 android:paddingTop="8dp"
                 android:rating="0"
-                app:layout_constraintEnd_toStartOf="@+id/detailsButtonLike"
-                app:layout_constraintHorizontal_bias="0.933"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/detailsGenres2"
                 app:layout_constraintTop_toBottomOf="@+id/detailsFilmImage" />
 
             <TextView
@@ -136,9 +182,9 @@
 
             <ImageView
                 android:id="@+id/detailsFilmImage"
-                android:layout_width="277dp"
-                android:layout_height="266dp"
-                android:layout_marginTop="8dp"
+                android:layout_width="445dp"
+                android:layout_height="457dp"
+                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/detailsTitle"
@@ -146,7 +192,7 @@
 
             <Spinner
                 android:id="@+id/detailsRatingSpinner"
-                android:layout_width="191dp"
+                android:layout_width="211dp"
                 android:layout_height="31dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="20dp"
@@ -168,27 +214,26 @@
                 android:id="@+id/detailsButtonComment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="64dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="24dp"
                 android:backgroundTint="#E91E63"
                 android:tint="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.194"
                 app:layout_constraintStart_toEndOf="@+id/detailsCommentTextField"
-                app:layout_constraintTop_toBottomOf="@+id/detailsDescription"
+                app:layout_constraintTop_toBottomOf="@+id/detailsTitle5"
                 app:srcCompat="@drawable/ic_baseline_chat_bubble_24" />
 
             <EditText
                 android:id="@+id/detailsCommentTextField"
                 android:layout_width="282dp"
                 android:layout_height="41dp"
-                android:layout_marginStart="36dp"
-                android:layout_marginTop="64dp"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="24dp"
                 android:ems="10"
                 android:hint="@string/text_comment"
                 android:inputType="textPersonName"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detailsDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/detailsTitle5" />
 
             <TextView
                 android:id="@+id/textView5"
