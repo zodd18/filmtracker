@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -77,6 +78,8 @@ public class PrincipalActivity extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.topMenuChat:
                         System.out.println("--------entra en chat");
+                        Intent intent = new Intent(PrincipalActivity.this, ChatActivity.class);
+                        startActivity(intent);
                         return true;
                     case R.id.topMenuSearch:
                         System.out.println("--------entra en la busqueda");

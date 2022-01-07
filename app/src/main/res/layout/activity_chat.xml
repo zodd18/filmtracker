@@ -7,6 +7,7 @@
     tools:context=".ChatActivity">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,4 +24,26 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_baseline_add_24" />
+
+    <ProgressBar
+        android:id="@+id/chatProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/chatTextViewLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cargando amigos"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chatProgressBar"
+        app:layout_constraintVertical_bias="0.02" />
 </androidx.constraintlayout.widget.ConstraintLayout>
