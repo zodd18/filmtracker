@@ -27,6 +27,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,7 @@ public class ChatActivity extends AppCompatActivity {
     //Firebase
     private FirebaseUser thisUser;
     private FirebaseFirestore db;
+    private FirebaseStorage storage;
 
     //View Components
     private ProgressBar chatProgressBar;
@@ -69,6 +72,7 @@ public class ChatActivity extends AppCompatActivity {
 
         //Firebase
         db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
         thisUser = (FirebaseUser) SingletonMap.getInstance().get(SingletonMap.FIREBASE_USER_INSTANCE);
 
         //Recycler View - Get friend list
@@ -126,6 +130,10 @@ public class ChatActivity extends AppCompatActivity {
 
 
     //------------------Load and display in recycler view------------------
+    //Note: First, we charge the email, fullname and the username. When it's loaded, we will charge
+    //the recycler view. While the Recycler view are displaying the elements finally we will charge
+    // the profile images.
+
     private List<Friend> getFriendsDetails(List<String> emailList)  {
         List<Friend> friendList = new ArrayList<>();
 
@@ -142,6 +150,7 @@ public class ChatActivity extends AppCompatActivity {
                                 f.setEmail((String) document.getData().get("email"));
                                 f.setFullName((String) document.getData().get("full_name"));
                                 f.setUsername((String) document.getData().get("username"));
+                                f.setHas_image((Boolean) document.getData().get("has_image"));
                                 friendList.add(f);
                             }
                             configureRecyclerView(friendList);
