@@ -89,220 +89,218 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     // binds the data to the TextView in each cell
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        Movie currentMovie = data.get(position);
-        if ((position+VISIBLE_THRESHOLD)>=data.size() && !isFetching) {
-            isFetching = true;
-            onLoadCustomListener.load();
-        } else {
+        try {
+            Movie currentMovie = data.get(position);
+            if ((position+VISIBLE_THRESHOLD)>=data.size() && !isFetching) {
+                isFetching = true;
+                onLoadCustomListener.load();
+            } else {
 //            addAlreadyFetchedFilm(String.valueOf(currentMovie.getId()));
-            System.out.println("            POSITION: " + position);
-            System.out.println("            CURRENT MOVIE: " + currentMovie.getTitle());
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                System.out.println("            POSITION: " + position);
+                System.out.println("            CURRENT MOVIE: " + currentMovie.getTitle());
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            // --------------- About ---------------
+                // --------------- About ---------------
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    View.OnClickListener detailsListener = new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            System.out.println("Se ha seleccionado uno");
-                            Intent intent = new Intent(ctx, FilmsDetailsActivity.class);
-                            ctx.startActivity(intent);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        View.OnClickListener detailsListener = new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                System.out.println("Se ha seleccionado uno");
+                                Intent intent = new Intent(ctx, FilmsDetailsActivity.class);
+                                ctx.startActivity(intent);
 
-                            System.out.println("NOMBRE DE LA CLASE: ");
-                            System.out.println(getClass());
-                            System.out.println(getClass().getSimpleName());
-                            System.out.println(getClass().getName());
-                            Map<String, Object> movie = new HashMap<>();
-                            SingletonMap.getInstance().put(SingletonMap.CURRENT_FILM_DETAILS, currentMovie);
-                            SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_RECYCLER_VIEW, this);
-                            SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_HOLDER, holder);
-                            SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_POSITION, position);
-                        }
-                    };
-                    holder.btnAbout.setOnClickListener(detailsListener);
-                    holder.card.setOnClickListener(detailsListener);
-                }
-            }).start();
+                                System.out.println("NOMBRE DE LA CLASE: ");
+                                System.out.println(getClass());
+                                System.out.println(getClass().getSimpleName());
+                                System.out.println(getClass().getName());
+                                Map<String, Object> movie = new HashMap<>();
+                                SingletonMap.getInstance().put(SingletonMap.CURRENT_FILM_DETAILS, currentMovie);
+                                SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_RECYCLER_VIEW, this);
+                                SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_HOLDER, holder);
+                                SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_POSITION, position);
+                            }
+                        };
+                        holder.btnAbout.setOnClickListener(detailsListener);
+                        holder.card.setOnClickListener(detailsListener);
+                    }
+                }).start();
 
-            // --------------- END of About ---------------
-
-
-            // --------------- Image ---------------
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    holder.image.setImageBitmap(currentMovie.getImage());
-                }
-            }).start();
-
-            // --------------- END of Image ---------------
+                // --------------- END of About ---------------
 
 
-            // --------------- Title and Genres ---------------
+                // --------------- Image ---------------
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    holder.title.setText(currentMovie.getTitle());
-                    String genresResult = "";
-                    for(int i : currentMovie.getGenre_ids()){
-                        Genre gi = new Genre(i);
-                        for(Genre g : genres){
-                            if(g.equals(gi)){
-                                genresResult+=g.getName()+"\n";
+                holder.image.setImageBitmap(currentMovie.getImage());
+                // --------------- END of Image ---------------
+
+
+                // --------------- Title and Genres ---------------
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.title.setText(currentMovie.getTitle());
+                        String genresResult = "";
+                        for(int i : currentMovie.getGenre_ids()){
+                            Genre gi = new Genre(i);
+                            for(Genre g : genres){
+                                if(g.equals(gi)){
+                                    genresResult+=g.getName()+"\n";
+                                }
                             }
                         }
+                        holder.subtitle.setText(genresResult);
                     }
-                    holder.subtitle.setText(genresResult);
-                }
-            }).start();
+                }).start();
 
 
 
-            // --------------- END of Title and Genres ---------------
+                // --------------- END of Title and Genres ---------------
 
 
-            // --------------- Film Rating ---------------
+                // --------------- Film Rating ---------------
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    db.collection("Rating")
-                            .whereEqualTo("film_id", String.valueOf(currentMovie.getId()))
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    float sum = 0;
-                                    float ratings = 0;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        db.collection("Rating")
+                                .whereEqualTo("film_id", String.valueOf(currentMovie.getId()))
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        float sum = 0;
+                                        float ratings = 0;
 
-                                    if (task.isSuccessful()) {
+                                        if (task.isSuccessful()) {
 
-                                        // Print query
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            Log.d("FILM RATING", document.getId() + " => " + document.getData());
-                                            Double puntuation = document.getData().get("puntuation") == null ? null : Double.parseDouble(document.getData().get("puntuation").toString());
-                                            if (puntuation != null) {
-                                                sum += puntuation;
-                                                ratings++;
-                                            }
-                                        }
-                                    } else {
-                                        Log.w("TAG", "Error getting documents.", task.getException());
-                                    }
-
-                                    if (ratings == 0)
-                                        holder.ratingBar.setRating(0);
-                                    else {
-                                        System.out.println("SUM: " + sum + ", RATINGS: " + ratings);
-                                        holder.ratingBar.setRating(sum/ratings/2);
-                                    }
-                                }
-                            });
-                }
-            }).start();
-
-
-
-            // --------------- END of Film Rating ---------------
-
-
-            // --------------- Like btn ---------------
-
-
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            Color likeBtnColor = Color.valueOf(Color.rgb(233, 30, 99));
-            Color likeBtnColorOff = Color.valueOf(Color.rgb(117, 117, 117));
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    // Colorize fav buttons for every user's favorite film
-                    db.collection("Favorite")
-                            .whereEqualTo("user_id", user.getEmail())
-                            .whereEqualTo("film_id", String.valueOf(currentMovie.getId()))
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        if (task.getResult().isEmpty())
-                                            holder.btnLike.setColorFilter(likeBtnColorOff.toArgb());
-                                        else {
-                                            holder.btnLike.setColorFilter(likeBtnColor.toArgb());
-                                        }
-                                    } else {
-                                        Log.w("TAG", "Error getting documents.", task.getException());
-                                    }
-                                }
-                            });
-
-                    holder.btnLike.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            db.collection("Favorite")
-                                    .whereEqualTo("user_id", user.getEmail())
-                                    .whereEqualTo("film_id", String.valueOf(currentMovie.getId()))
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                if (task.getResult().size() > 0) {
-                                                    // Remove Favorite
-                                                    QueryDocumentSnapshot doc = task.getResult().iterator().next();
-                                                    db.collection("Favorite")
-                                                            .document(doc.getId())
-                                                            .delete()
-                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                @Override
-                                                                public void onSuccess(Void aVoid) {
-                                                                    holder.btnLike.setColorFilter(likeBtnColorOff.toArgb());
-                                                                }
-                                                            })
-                                                            .addOnFailureListener(new OnFailureListener() {
-                                                                @Override
-                                                                public void onFailure(@NonNull Exception e) {
-                                                                    Log.w("ERROR", "Error deleting document Favorite", e);
-                                                                }
-                                                            });
-                                                } else {
-                                                    // Favorite
-                                                    Map<String, Object> favorite = new HashMap<>();
-                                                    favorite.put("user_id", user.getEmail());
-                                                    favorite.put("film_id", String.valueOf(currentMovie.getId()));
-
-                                                    // Add favorite to database
-                                                    db.collection("Favorite").document()
-                                                            .set(favorite)
-                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                @Override
-                                                                public void onSuccess(Void aVoid) {
-                                                                    holder.btnLike.setColorFilter(likeBtnColor.toArgb());
-                                                                }
-                                                            })
-                                                            .addOnFailureListener(new OnFailureListener() {
-                                                                @Override
-                                                                public void onFailure(@NonNull Exception e) {
-                                                                    Log.w("ERROR", "Error writing document", e);
-                                                                }
-                                                            });
+                                            // Print query
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                Log.d("FILM RATING", document.getId() + " => " + document.getData());
+                                                Double puntuation = document.getData().get("puntuation") == null ? null : Double.parseDouble(document.getData().get("puntuation").toString());
+                                                if (puntuation != null) {
+                                                    sum += puntuation;
+                                                    ratings++;
                                                 }
-
-                                            } else {
-                                                Log.w("TAG", "Error getting documents.", task.getException());
                                             }
+                                        } else {
+                                            Log.w("TAG", "Error getting documents.", task.getException());
                                         }
-                                    });
-                        }
-                    });
-                }
-            }).start();
 
-            // --------------- END of Like btn ---------------
+                                        if (ratings == 0)
+                                            holder.ratingBar.setRating(0);
+                                        else {
+                                            System.out.println("SUM: " + sum + ", RATINGS: " + ratings);
+                                            holder.ratingBar.setRating(sum/ratings/2);
+                                        }
+                                    }
+                                });
+                    }
+                }).start();
+
+
+
+                // --------------- END of Film Rating ---------------
+
+
+                // --------------- Like btn ---------------
+
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                Color likeBtnColor = Color.valueOf(Color.rgb(233, 30, 99));
+                Color likeBtnColorOff = Color.valueOf(Color.rgb(117, 117, 117));
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Colorize fav buttons for every user's favorite film
+                        db.collection("Favorite")
+                                .whereEqualTo("user_id", user.getEmail())
+                                .whereEqualTo("film_id", String.valueOf(currentMovie.getId()))
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            if (task.getResult().isEmpty())
+                                                holder.btnLike.setColorFilter(likeBtnColorOff.toArgb());
+                                            else {
+                                                holder.btnLike.setColorFilter(likeBtnColor.toArgb());
+                                            }
+                                        } else {
+                                            Log.w("TAG", "Error getting documents.", task.getException());
+                                        }
+                                    }
+                                });
+
+                        holder.btnLike.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                db.collection("Favorite")
+                                        .whereEqualTo("user_id", user.getEmail())
+                                        .whereEqualTo("film_id", String.valueOf(currentMovie.getId()))
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    if (task.getResult().size() > 0) {
+                                                        // Remove Favorite
+                                                        QueryDocumentSnapshot doc = task.getResult().iterator().next();
+                                                        db.collection("Favorite")
+                                                                .document(doc.getId())
+                                                                .delete()
+                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void aVoid) {
+                                                                        holder.btnLike.setColorFilter(likeBtnColorOff.toArgb());
+                                                                    }
+                                                                })
+                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        Log.w("ERROR", "Error deleting document Favorite", e);
+                                                                    }
+                                                                });
+                                                    } else {
+                                                        // Favorite
+                                                        Map<String, Object> favorite = new HashMap<>();
+                                                        favorite.put("user_id", user.getEmail());
+                                                        favorite.put("film_id", String.valueOf(currentMovie.getId()));
+
+                                                        // Add favorite to database
+                                                        db.collection("Favorite").document()
+                                                                .set(favorite)
+                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void aVoid) {
+                                                                        holder.btnLike.setColorFilter(likeBtnColor.toArgb());
+                                                                    }
+                                                                })
+                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        Log.w("ERROR", "Error writing document", e);
+                                                                    }
+                                                                });
+                                                    }
+
+                                                } else {
+                                                    Log.w("TAG", "Error getting documents.", task.getException());
+                                                }
+                                            }
+                                        });
+                            }
+                        });
+                    }
+                }).start();
+
+                // --------------- END of Like btn ---------------
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

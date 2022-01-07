@@ -217,7 +217,7 @@ public class LikesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER) != null) {
+        if (SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER) != null && recyclerViewAdapter != null) {
             CustomRecyclerViewAdapter.ViewHolder holder = (CustomRecyclerViewAdapter.ViewHolder) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER);
             int position = (int) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_POSITION);
             // Updates this film on the previous view
