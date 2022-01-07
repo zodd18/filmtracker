@@ -54,4 +54,5 @@
     <string name="chat_add_dialog_title">Add a friend</string>
     <string name="text_rating">Rating:</string>
     <string name="text_favorite">Favorite:</string>
+    <string name="button_welcome">WELCOME</string>
 </resources>
