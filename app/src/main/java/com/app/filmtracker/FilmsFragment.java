@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -81,7 +82,7 @@ public class FilmsFragment extends Fragment {
 
     //View Components
     RecyclerView filmsRecyclerView;
-
+    CustomRecyclerViewAdapter adapter;
     //Data
     List<Genre> genresList;
 
@@ -96,7 +97,6 @@ public class FilmsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
 
 
 
@@ -160,7 +160,7 @@ public class FilmsFragment extends Fragment {
     private void createAndStartRecyclerView(){
         filmsRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2)); //new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-        CustomRecyclerViewAdapter adapter = new CustomRecyclerViewAdapter(getActivity(), genresList);
+        adapter = new CustomRecyclerViewAdapter(getActivity(), genresList);
 
         //Fetch data
         adapter.setOnLoadCustomListener(new OnLoadCustomListener() {
@@ -215,6 +215,14 @@ public class FilmsFragment extends Fragment {
         filmsRecyclerView.setAdapter(adapter);
     }
 
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER) != null) {
+            CustomRecyclerViewAdapter.ViewHolder holder = (CustomRecyclerViewAdapter.ViewHolder) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER);
+            int position = (int) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_POSITION);
+            // Updates this film on the previous view
+            adapter.onBindViewHolder(holder, position);
+        }
+    }
 }

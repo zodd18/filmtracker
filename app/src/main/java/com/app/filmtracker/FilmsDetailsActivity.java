@@ -1,5 +1,6 @@
 package com.app.filmtracker;
 
+import androidx.activity.OnBackPressedDispatcherOwner;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.app.filmtracker.poo.SingletonMap;
+import com.app.filmtracker.recycler.CustomRecyclerViewAdapter;
 import com.app.filmtracker.vo.Genre;
 import com.app.filmtracker.vo.Movie;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -82,7 +84,19 @@ public class FilmsDetailsActivity extends AppCompatActivity {
 
         setViewComponents();
         setFilmInfo();
+
     }
+
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//
+//        CustomRecyclerViewAdapter customRecyclerViewAdapter = (CustomRecyclerViewAdapter) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_RECYCLER_VIEW);
+//        CustomRecyclerViewAdapter.ViewHolder holder = (CustomRecyclerViewAdapter.ViewHolder) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER);
+//        int position = (int) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_POSITION);
+//        // Updates this film on the previous view
+//        customRecyclerViewAdapter.onBindViewHolder(holder, position);
+//    }
 
     private void setFilmInfo() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -217,7 +231,8 @@ public class FilmsDetailsActivity extends AppCompatActivity {
                                                 // UPDATE EXISTING RATING
                                                 DocumentSnapshot document = task.getResult().iterator().next();
                                                 db.collection("Rating").document(document.getId()).update(
-                                                        "date", rating.get("date"), "rating", rating.get("puntuation"));
+                                                        "date", rating.get("date"), "puntuation", rating.get("puntuation"));
+                                                setStars(db, user);
                                             }
                                         } else {
                                             Log.w("ERROR", "Error getting documents.", task.getException());
