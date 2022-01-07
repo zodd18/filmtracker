@@ -107,12 +107,6 @@ public class ChatActivity extends AppCompatActivity {
                                     else
                                         emailFriendsList.add(emails.get(0));
                                 }
-                                /*for(int i=0; i<emailFriendsList.size(); i++){
-                                    if(emailFriendsList.get(i).equalsIgnoreCase(thisUser.getEmail())){
-                                        emailFriendsList.remove(i);
-                                        break;
-                                    }
-                                }*/
                                 emailFriendsList.addAll(emailFriendsList);
                                 getFriendsDetails(emailFriendsList);
                             }
@@ -169,56 +163,6 @@ public class ChatActivity extends AppCompatActivity {
                                         Toast.LENGTH_SHORT).show();
                             }
                         });
-
-
-                /*db.collection("Friend")
-                        .whereEqualTo("user_email", thisUser.getEmail())
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                                    if(documents == null || documents.isEmpty()) {
-                                        //We need to create it
-                                        Map<String, Object> data = new HashMap<>();
-                                        data.put("user_email", thisUser.getEmail());
-
-                                        Map<String, String> aux = new HashMap<>();
-                                        aux.put("user_email", emailUserName);
-                                        data.put("friend_list", aux);
-                                        db.collection("Friend")
-                                                .add(data)
-                                                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                        Toast.makeText(ChatActivity.this, "Se añadió correctamente .",
-                                                                Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                    } else {
-                                        String id = documents.get(0).getId();
-                                        Map<String, String> friendList = (Map<String, String>) documents.get(0).getData().get("friend_list");
-                                        friendList.put("user_email", emailUserName);
-
-                                        db.collection("Friend")
-                                                .document(id)
-                                                .update("friend_list", friendList).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                Toast.makeText(ChatActivity.this, "Se añadió correctamente .",
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    }
-
-                                } else {
-                                    Toast.makeText(ChatActivity.this, "Ha ocurrido un al enviar la solicitud.",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-
-                            }
-                        });*/
             }
         });
         dialog.show();
