@@ -206,7 +206,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void configureRecyclerView(List<Friend> friends){
-                recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         chatTextViewLoading.setVisibility(View.INVISIBLE);
         chatProgressBar.setVisibility(View.INVISIBLE);
         ChatRecyclerViewAdapter adapter = new ChatRecyclerViewAdapter(this, friends);

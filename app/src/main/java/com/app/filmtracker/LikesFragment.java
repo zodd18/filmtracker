@@ -39,6 +39,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -127,9 +128,7 @@ public class LikesFragment extends Fragment {
     }
 
     private void createAndStartRecyclerView(){
-        filmsRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2)); //new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-        recyclerViewAdapter = new CustomRecyclerViewAdapter(getActivity(), genresList);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -151,38 +150,46 @@ public class LikesFragment extends Fragment {
 
                             //Fetch data
                             List<Movie> moviesList = new ArrayList<>();
+                            filmsRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2)); //new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+
+                            recyclerViewAdapter = new CustomRecyclerViewAdapter(getActivity(), genresList);
 
                             recyclerViewAdapter.setOnLoadCustomListener(new OnLoadCustomListener() {
                                 @Override
                                 public void load() {
-                                    for (Integer filmId : filmsId) {
-                                        String url = "https://api.themoviedb.org/3/movie/" + filmId + "?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language=" + getString(R.string.language);
-                                        System.out.println("            FETCHING... -> " + url);
-                                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                                                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                                                    @Override
-                                                    public void onResponse(JSONObject response) {
-                                                        try {
-                                                            recyclerViewAdapter.setLastPage(1);
-                                                            Movie movie = gson.fromJson(response.toString(), new TypeToken<Movie>(){}.getType());
+                                    if(recyclerViewAdapter.getLastPage() == 1){
+                                        recyclerViewAdapter.setLastPage(0);
 
-                                                            moviesList.add(movie);
-                                                            System.out.println(response);
-                                                        } catch (Exception e) {
-                                                            e.printStackTrace();
+                                        for (Integer filmId : filmsId) {
+                                            String url = "https://api.themoviedb.org/3/movie/" + filmId + "?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language=" + getString(R.string.language);
+                                            System.out.println("            FETCHING... -> " + url);
+                                            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                                                    (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                                                        @Override
+                                                        public void onResponse(JSONObject response) {
+                                                            try {
+                                                                Movie movie = gson.fromJson(response.toString(), new TypeToken<Movie>(){}.getType());
+
+                                                                recyclerViewAdapter.addNewDataAndNotify(Arrays.asList(movie));
+                                                                System.out.println(response);
+                                                            } catch (Exception e) {
+                                                                e.printStackTrace();
+                                                            }
+
+
                                                         }
+                                                    }, new Response.ErrorListener() {
+                                                        @Override
+                                                        public void onErrorResponse(VolleyError error) {
+                                                            System.out.println("------Error en el Volley");
+                                                        }
+                                                    });
+                                            requestQueue.add(jsonObjectRequest);
 
-                                                    }
-                                                }, new Response.ErrorListener() {
-                                                    @Override
-                                                    public void onErrorResponse(VolleyError error) {
-                                                        System.out.println("------Error en el Volley");
-                                                    }
-                                                });
-                                        requestQueue.add(jsonObjectRequest);
+                                        }
                                     }
                                     // Adapter movieslist
-                                    recyclerViewAdapter.addNewDataAndNotify(moviesList);
+
                                     System.out.println("ITEM COUNT: " + recyclerViewAdapter.getItemCount());
                                 }
                             });
