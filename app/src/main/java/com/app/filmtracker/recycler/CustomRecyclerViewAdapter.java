@@ -31,8 +31,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -86,24 +88,28 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     // binds the data to the TextView in each cell
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        if((position+VISIBLE_THRESHOLD)>=data.size() && !isFetching){
+        Movie currentMovie = data.get(position);
+        if ((position+VISIBLE_THRESHOLD)>=data.size() && !isFetching) {
             isFetching = true;
             onLoadCustomListener.load();
         } else {
+//            addAlreadyFetchedFilm(String.valueOf(currentMovie.getId()));
+            System.out.println("            POSITION: " + position);
+            System.out.println("            CURRENT MOVIE: " + currentMovie.getTitle());
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
             // --------------- Image ---------------
 
-            holder.image.setImageBitmap(this.data.get(position).getImage());
+            holder.image.setImageBitmap(currentMovie.getImage());
 
             // --------------- END of Image ---------------
 
 
             // --------------- Title and Genres ---------------
 
-            holder.title.setText(this.data.get(position).getTitle());
+            holder.title.setText(currentMovie.getTitle());
             String genresResult = "";
-            for(int i : this.data.get(position).getGenre_ids()){
+            for(int i : currentMovie.getGenre_ids()){
                 Genre gi = new Genre(i);
                 for(Genre g : genres){
                     if(g.equals(gi)){
@@ -119,7 +125,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
             // --------------- Film Rating ---------------
 
             db.collection("Rating")
-                    .whereEqualTo("film_id", String.valueOf(this.data.get(position).getId()))
+                    .whereEqualTo("film_id", String.valueOf(currentMovie.getId()))
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -159,28 +165,33 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             Color likeBtnColor = Color.valueOf(Color.rgb(233, 30, 99));
             Color likeBtnColorOff = Color.valueOf(Color.rgb(117, 117, 117));
+
+            // Colorize fav buttons for every user's favorite film
             db.collection("Favorite")
                     .whereEqualTo("user_id", user.getEmail())
-                    .whereEqualTo("film_id", String.valueOf(this.data.get(position).getId()))
+                    .whereEqualTo("film_id", String.valueOf(currentMovie.getId()))
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
-
-                                if (task.getResult().size() > 0)
+                                if (task.getResult().isEmpty())
+                                    holder.btnLike.setColorFilter(likeBtnColorOff.toArgb());
+                                else {
                                     holder.btnLike.setColorFilter(likeBtnColor.toArgb());
+                                }
                             } else {
                                 Log.w("TAG", "Error getting documents.", task.getException());
                             }
                         }
                     });
+
             holder.btnLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     db.collection("Favorite")
                             .whereEqualTo("user_id", user.getEmail())
-                            .whereEqualTo("film_id", String.valueOf(data.get(position).getId()))
+                            .whereEqualTo("film_id", String.valueOf(currentMovie.getId()))
                             .get()
                             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
@@ -208,7 +219,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
                                             // Favorite
                                             Map<String, Object> favorite = new HashMap<>();
                                             favorite.put("user_id", user.getEmail());
-                                            favorite.put("film_id", String.valueOf(data.get(position).getId()));
+                                            favorite.put("film_id", String.valueOf(currentMovie.getId()));
 
                                             // Add favorite to database
                                             db.collection("Favorite").document()
@@ -247,8 +258,15 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
                     Intent intent = new Intent(ctx, FilmsDetailsActivity.class);
                     ctx.startActivity(intent);
 
+                    System.out.println("NOMBRE DE LA CLASE: ");
+                    System.out.println(getClass());
+                    System.out.println(getClass().getSimpleName());
+                    System.out.println(getClass().getName());
                     Map<String, Object> movie = new HashMap<>();
-                    SingletonMap.getInstance().put(SingletonMap.CURRENT_FILM_DETAILS, data.get(position));
+                    SingletonMap.getInstance().put(SingletonMap.CURRENT_FILM_DETAILS, currentMovie);
+                    SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_RECYCLER_VIEW, this);
+                    SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_HOLDER, holder);
+                    SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_POSITION, position);
                 }
             };
             holder.btnAbout.setOnClickListener(detailsListener);
@@ -262,6 +280,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     public int getItemCount() {
         return data.size();
     }
+
 
 
     /*public void fetchMovies(){
@@ -399,7 +418,6 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
         if(this.onClickListener!=null)
             onClickListener.onClick(view);
     }
-
 
     // convenience method for getting data at click position
     /*Object getItem(int id) {

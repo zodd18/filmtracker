@@ -49,4 +49,6 @@
     <string name="chat_add_friends_user">Usuario</string>
     <string name="add">Añadir</string>
     <string name="chat_add_dialog_title">Añadir un amigo</string>
+    <string name="text_rating">Puntuación:</string>
+    <string name="text_favorite">Favorita:</string>
 </resources>
