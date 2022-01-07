@@ -14,6 +14,7 @@ public class Friend {
     private Bitmap profileImage;
 
 
+
     public Boolean getHas_image() {
         return has_image;
     }

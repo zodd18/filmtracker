@@ -151,6 +151,7 @@ public class ChatActivity extends AppCompatActivity {
                                 f.setFullName((String) document.getData().get("full_name"));
                                 f.setUsername((String) document.getData().get("username"));
                                 f.setHas_image((Boolean) document.getData().get("has_image"));
+                                f.setProfileImage(null);
                                 friendList.add(f);
                             }
                             configureRecyclerView(friendList);
@@ -167,7 +168,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void configureRecyclerView(List<Friend> friends){
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         chatTextViewLoading.setVisibility(View.INVISIBLE);
         chatProgressBar.setVisibility(View.INVISIBLE);
         ChatRecyclerViewAdapter adapter = new ChatRecyclerViewAdapter(this, friends);
