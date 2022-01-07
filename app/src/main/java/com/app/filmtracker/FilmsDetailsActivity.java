@@ -29,6 +29,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Transaction;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -139,8 +140,7 @@ public class FilmsDetailsActivity extends AppCompatActivity {
                     }
                 });
 
-        // TODO SET user's rating
-
+        // SET user's rating
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -175,7 +175,7 @@ public class FilmsDetailsActivity extends AppCompatActivity {
                         rating.put("date", new Timestamp(new Date()));
                         rating.put("puntuation", getRatingFromSpinnerSelection(position));
 
-                        // Add rating to database
+                        // Add rating to database, or update existing one
                         db.collection("Rating")
                                 .whereEqualTo("film_id", String.valueOf(movie.getId()))
                                 .whereEqualTo("user_id", user.getEmail())
@@ -184,24 +184,28 @@ public class FilmsDetailsActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                         if (task.isSuccessful()) {
-                                            for (DocumentSnapshot document : task.getResult()) {
-                                                db.collection("Rating").document(document.getId()).delete();
+                                            if (task.getResult().size() == 0) {
+                                                // ADD NEW
+                                                db.collection("Rating").document()
+                                                        .set(rating)
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                setStars(db, user);
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Log.w("ERROR", "Error writing document", e);
+                                                            }
+                                                        });
+                                            } else {
+                                                // UPDATE EXISTING RATING
+                                                DocumentSnapshot document = task.getResult().iterator().next();
+                                                db.collection("Rating").document(document.getId()).update(
+                                                        "date", rating.get("date"), "rating", rating.get("puntuation"));
                                             }
-
-                                            db.collection("Rating").document()
-                                                    .set(rating)
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            setStars(db, user);
-                                                        }
-                                                    })
-                                                    .addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            Log.w("ERROR", "Error writing document", e);
-                                                        }
-                                                    });
                                         } else {
                                             Log.w("ERROR", "Error getting documents.", task.getException());
                                         }
