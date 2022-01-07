@@ -43,4 +43,10 @@
     <string name="spinner_details_watching">La estoy viendo</string>
     <string name="spinner_details_planned_to_watch">Tengo planeado verla</string>
     <string name="text_comment">Comentar...</string>
+    <string name="chat_spinner_loading">Cargando amigos</string>
+    <string name="chat_without_friends">No tienes ningún amigo!</string>
+    <string name="chat_add_friends_text">Introduce el correo o el nombre de usuario de tu amigo para enviar una solicitud</string>
+    <string name="chat_add_friends_user">Usuario</string>
+    <string name="add">Añadir</string>
+    <string name="chat_add_dialog_title">Añadir un amigo</string>
 </resources>
