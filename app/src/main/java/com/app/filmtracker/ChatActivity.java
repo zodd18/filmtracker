@@ -58,6 +58,9 @@ public class ChatActivity extends AppCompatActivity {
     private FloatingActionButton chatAddFriendButton;
     private MaterialToolbar topMenuToolbar;
 
+    //
+    ChatRecyclerViewAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,38 +88,47 @@ public class ChatActivity extends AppCompatActivity {
         thisUser = (FirebaseUser) SingletonMap.getInstance().get(SingletonMap.FIREBASE_USER_INSTANCE);
 
         //Recycler View - Get friend list
-        db.collection("Friend")
-                .whereArrayContains("email", thisUser.getEmail())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                            if(documents == null || documents.isEmpty()){
-                                //We need to show to the user that he doenst have friends
-                                chatProgressBar.setVisibility(View.INVISIBLE);
-                                chatTextViewLoading.setText(R.string.chat_without_friends);
-                            } else {
-                                //At least the user have 1 friend
-                                List<String> emailFriendsList = new ArrayList<>();
-                                for(DocumentSnapshot doc : documents){
-                                    List<String> emails = (List<String>) doc.getData().get("email");
-                                    if(emails.get(0).equalsIgnoreCase(thisUser.getEmail())) //Remove the self user
-                                        emailFriendsList.add(emails.get(1));
-                                    else
-                                        emailFriendsList.add(emails.get(0));
-                                }
-                                emailFriendsList.addAll(emailFriendsList);
-                                getFriendsDetails(emailFriendsList);
-                            }
+        List<Friend> friendList = (List<Friend>) SingletonMap.getInstance().get("FRIEND_LIST");
+        if(friendList == null) {
 
-                        } else {
-                            Toast.makeText(ChatActivity.this, "Ha ocurrido un error al cargar tu email(debug).",
-                                    Toast.LENGTH_SHORT).show();
+            db.collection("Friend")
+                    .whereArrayContains("email", thisUser.getEmail())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                                if (documents == null || documents.isEmpty()) {
+                                    //We need to show to the user that he doenst have friends
+                                    List<Friend> f = new ArrayList<>();
+                                    SingletonMap.getInstance().put("FRIEND_LIST", f);
+                                    chatProgressBar.setVisibility(View.INVISIBLE);
+                                    chatTextViewLoading.setText(R.string.chat_without_friends);
+                                } else {
+                                    //At least the user have 1 friend
+                                    List<String> emailFriendsList = new ArrayList<>();
+                                    for (DocumentSnapshot doc : documents) {
+                                        List<String> emails = (List<String>) doc.getData().get("email");
+                                        if (emails.get(0).equalsIgnoreCase(thisUser.getEmail())) //Remove the self user
+                                            emailFriendsList.add(emails.get(1));
+                                        else
+                                            emailFriendsList.add(emails.get(0));
+                                    }
+                                    emailFriendsList.addAll(emailFriendsList);
+                                    getFriendsDetails(emailFriendsList, true);
+                                }
+
+                            } else {
+                                Toast.makeText(ChatActivity.this, "Ha ocurrido un error al cargar tu email(debug).",
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+        } else {
+            configureRecyclerView(friendList);
+        }
+
 
         //App Bar Layout - Top menu
         topMenuToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -149,20 +161,55 @@ public class ChatActivity extends AppCompatActivity {
                 System.out.println("---------------PULSADO EN OK");
                 String emailUserName = textInputLayout.getEditText().getText().toString();
 
-                Map<String, Object> data = new HashMap<>();
-                List<String> friendList = new ArrayList<>();
-                friendList.add(emailUserName);
-                friendList.add(thisUser.getEmail());
-                data.put("email", friendList);
-                db.collection("Friend")
-                        .add(data)
-                        .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                db.collection("User")
+                        .whereEqualTo("email", emailUserName)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
-                            public void onComplete(@NonNull Task<DocumentReference> task) {
-                                Toast.makeText(ChatActivity.this, "Se añadió correctamente .",
-                                        Toast.LENGTH_SHORT).show();
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                                    if(documents == null || documents.isEmpty()) {
+                                        Toast.makeText(ChatActivity.this, "No se ha encontrado el usuario(debug).",
+                                                Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Friend f = new Friend();
+                                        f.setEmail((String) documents.get(0).getData().get("email"));
+                                        f.setFullName((String) documents.get(0).getData().get("full_name"));
+                                        f.setUsername((String) documents.get(0).getData().get("username"));
+                                        f.setHas_image((Boolean) documents.get(0).getData().get("has_image"));
+                                        f.setProfileImage(null);
+                                        List<Friend> friendList = (List<Friend>) SingletonMap.getInstance().get("FRIEND_LIST");
+                                        friendList.add(f);
+                                        adapter.notifyDataSetChanged();
+
+                                        //Quizas put? en el singleton
+                                        Map<String, Object> data = new HashMap<>();
+                                        List<String> dataList = new ArrayList<>();
+                                        dataList.add(emailUserName);
+                                        dataList.add(thisUser.getEmail());
+                                        data.put("email", dataList);
+                                        db.collection("Friend")
+                                                .add(data)
+                                                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                        Toast.makeText(ChatActivity.this, "Se añadió correctamente .",
+                                                                Toast.LENGTH_SHORT).show();
+
+                                                    }
+                                                });
+                                    }
+
+
+                                } else {
+                                    Toast.makeText(ChatActivity.this, "No se ha encontrado el usuario(debug).",
+                                            Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
+
+
             }
         });
         dialog.show();
@@ -174,8 +221,7 @@ public class ChatActivity extends AppCompatActivity {
     //the recycler view. While the Recycler view are displaying the elements finally we will charge
     // the profile images.
 
-    private List<Friend> getFriendsDetails(List<String> emailList)  {
-        List<Friend> friendList = new ArrayList<>();
+    private void getFriendsDetails(List<String> emailList, boolean configureRecyclerView)  {
 
         db.collection("User")
                 .whereIn("email", emailList)
@@ -194,7 +240,9 @@ public class ChatActivity extends AppCompatActivity {
                                 f.setProfileImage(null);
                                 friendList.add(f);
                             }
-                            configureRecyclerView(friendList);
+                            SingletonMap.getInstance().put("FRIEND_LIST", friendList);
+                            if(configureRecyclerView)
+                                configureRecyclerView(friendList);
                         } else {
                             Toast.makeText(ChatActivity.this, "Ha ocurrido un error al los datos de tus amigos(debug).",
                                     Toast.LENGTH_SHORT).show();
@@ -202,14 +250,13 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
 
-        return friendList;
     }
 
     private void configureRecyclerView(List<Friend> friends){
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         chatTextViewLoading.setVisibility(View.INVISIBLE);
         chatProgressBar.setVisibility(View.INVISIBLE);
-        ChatRecyclerViewAdapter adapter = new ChatRecyclerViewAdapter(this, friends);
+        adapter = new ChatRecyclerViewAdapter(this, friends);
 
         recyclerView.setAdapter(adapter);
 
