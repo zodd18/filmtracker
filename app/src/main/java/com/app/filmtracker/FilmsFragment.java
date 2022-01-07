@@ -1,22 +1,14 @@
 package com.app.filmtracker;
 
-import android.app.ActivityOptions;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,7 +21,6 @@ import com.app.filmtracker.poo.SingletonMap;
 import com.app.filmtracker.recycler.CustomRecyclerViewAdapter;
 import com.app.filmtracker.vo.Genre;
 import com.app.filmtracker.vo.Movie;
-import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -47,35 +38,12 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class FilmsFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public FilmsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FilmsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static FilmsFragment newInstance(String param1, String param2) {
         FilmsFragment fragment = new FilmsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -93,13 +61,6 @@ public class FilmsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-
-
     }
 
     @Override
@@ -116,19 +77,15 @@ public class FilmsFragment extends Fragment {
         }
 
         //Recycler View
-        filmsRecyclerView = view.findViewById(R.id.filmsRecyclerView);
+        filmsRecyclerView = view.findViewById(R.id.favoriteFilmsRecyclerView);
         genresList = new ArrayList<>();
         gson = new Gson();
         fetchGenreAndThenStartRecyclerView();
         return view;
     }
 
-
-
-
-
     private void fetchGenreAndThenStartRecyclerView(){
-        String url = "https://api.themoviedb.org/3/genre/movie/list?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language=" + R.string.language;
+        String url = "https://api.themoviedb.org/3/genre/movie/list?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language=" + getString(R.string.language);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -166,7 +123,7 @@ public class FilmsFragment extends Fragment {
         adapter.setOnLoadCustomListener(new OnLoadCustomListener() {
             @Override
             public void load() {
-                String url = "https://api.themoviedb.org/3/discover/movie?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language="+ R.string.language +"&sort_by=popularity.desc&include_adult=false&include_video=false&page="+ adapter.getLastPage() +"&with_watch_monetization_types=flatrate";
+                String url = "https://api.themoviedb.org/3/discover/movie?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language="+ getString(R.string.language) +"&sort_by=popularity.desc&include_adult=false&include_video=false&page="+ adapter.getLastPage() +"&with_watch_monetization_types=flatrate";
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                         (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                             @Override
@@ -196,25 +153,10 @@ public class FilmsFragment extends Fragment {
             }
         });
 
-        //OnClick event
-//        adapter.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                System.out.println("Se ha seleccionado uno");
-//                Intent intent = new Intent(getContext(), FilmsDetailsActivity.class);
-//                startActivity(intent);
-//                /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                    Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(), view, "shared_container").toBundle();
-//                    startActivity(intent, bundle);
-//                } else {
-//                    startActivity(intent);
-//                }*/
-//            }
-//        });
-
         filmsRecyclerView.setAdapter(adapter);
     }
 
+    // When return to this fragment, updates the edited film data (rating, favorite)
     @Override
     public void onResume() {
         super.onResume();
