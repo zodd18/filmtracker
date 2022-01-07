@@ -31,8 +31,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
         //Carousel
         imageArray = new ArrayList();
-        imageArray.add(R.drawable.imagen1);
-        imageArray.add(R.drawable.img2);
+        imageArray.add(R.drawable.welcome1);
+        imageArray.add(R.drawable.welcome2);
 
         carouselView = findViewById(R.id.carouselViewWelcomeActivity);
         carouselView.setPageCount(imageArray.size());
