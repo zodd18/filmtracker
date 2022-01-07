@@ -2,6 +2,10 @@ package com.app.filmtracker.recycler;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +22,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.app.filmtracker.R;
 import com.app.filmtracker.vo.Friend;
 import com.app.filmtracker.vo.Genre;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +75,8 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         else
             name = data.get(position).getUsername();
         holder.chatItemUserName.setText(name);
+        if(data.get(position).getHas_image())
+            new ChargeImageProfileFireStorage().execute(data.get(position).getEmail(), holder);
     }
 
     @Override
@@ -69,9 +84,35 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
         return data.size();
     }
 
+    //Profile image task
+    private class ChargeImageProfileFireStorage extends AsyncTask<Object, Void, Void> {
 
+        private String userEmail;
+        private ViewHolder holder;
 
-    //OnClick events
+        @Override
+        protected Void doInBackground(Object... objects) {
+            this.userEmail = (String) objects[0];
+            this.holder = (ViewHolder) objects [1];
+
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageReference = storage.getReference().child(this.userEmail + "/" +"image_profile");
+            final long FIVE_MEGABYTE = 1024 * 1024 * 5;
+            storageReference.getBytes(FIVE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(@NonNull byte[] bytes) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    if(bitmap!=null)
+                        holder.chatItemprofileImage.setImageBitmap(bitmap);
+                }
+            });
+
+            return null;
+        }
+
+    }
+
+    //-------------------------OnClick events
     public void setOnClickListener(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }

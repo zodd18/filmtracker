@@ -278,7 +278,7 @@ public class LoginActivity extends AppCompatActivity {
         else
             userMap.put("full_name",  "");
         userMap.put("username", user.getEmail().replace("@gmail.com", ""));
-
+        userMap.put("has_image", false);
 
         db.collection("User")
                 .add(userMap)
@@ -286,7 +286,8 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if(task.isSuccessful()){
-
+                            if(user.getPhotoUrl() != null && !user.getPhotoUrl().toString().isEmpty())
+                                new UploadImageFireStorage().execute(user.getPhotoUrl().toString(), user.getEmail(), task.getResult().getId());
                         } else {
                             Toast.makeText(LoginActivity.this, "Ha ocurrido un error al guardar datos.",
                                     Toast.LENGTH_SHORT).show();
@@ -295,18 +296,19 @@ public class LoginActivity extends AppCompatActivity {
                 });
 
 
-        if(user.getPhotoUrl() != null && !user.getPhotoUrl().toString().isEmpty())
-            new UploadImageFireStorage().execute(user.getPhotoUrl().toString(), user.getEmail());
+
     }
 
     protected class UploadImageFireStorage extends AsyncTask<String, Void, Bitmap> {
 
         private String userEmail;
+        private String userId;
 
         @Override
         protected Bitmap doInBackground(String... strings) {
             String urldisplay = strings[0];
             this.userEmail = strings[1];
+            this.userId = strings[2];
 
             Bitmap iconProfile = null;
             try {
@@ -333,11 +335,16 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     System.out.println("-------------Subida de la imagen del perfil - ERROR");
+                    //Do nothing
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     System.out.println("-------------SE HA SUBIDO CORRECTAMENTE LA IMAGEN DE PERFIL");
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection("User")
+                            .document(userId)
+                            .update("has_image", true);
                 }
             });
         }

@@ -8,10 +8,19 @@ public class Friend {
     private String email;
     private String fullName;
     private String username;
+    private Boolean has_image;
 
     @Expose(serialize = false, deserialize = false)
     private Bitmap profileImage;
 
+
+    public Boolean getHas_image() {
+        return has_image;
+    }
+
+    public void setHas_image(Boolean has_image) {
+        this.has_image = has_image;
+    }
 
     public String getUsername() {
         return username;
