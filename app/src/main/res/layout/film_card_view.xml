@@ -153,7 +153,8 @@
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="17dp"
+            android:layout_marginBottom="12dp"
             android:background="?attr/customBgColorSecondary"
             android:indeterminateTint="?attr/colorOnSecondary"
             android:numStars="5"
@@ -162,9 +163,7 @@
             android:rating="0"
             android:secondaryProgressTint="?attr/colorOnSecondary"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/filmCardSubtitle"
-            app:layout_constraintVertical_bias="0.325" />
+            app:layout_constraintStart_toStartOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
