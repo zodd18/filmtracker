@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -23,11 +24,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
@@ -51,11 +54,14 @@ public class FilmsDetailsActivity extends AppCompatActivity {
     private ImageButton btnLike;
     private Spinner dropdown;
     private ListView commentsListView;
+    private EditText commentField;
+    private ImageButton btnComment;
 
     String[] spinnerSelections;
     private int initialSpinnerDisplayHasHappened = 0;
 
     List<String> comments = new ArrayList<>();
+    ArrayAdapter<String> commentsAdapter;
 
     // Get movie data from SingletonMap
     private final Movie movie =
@@ -67,6 +73,7 @@ public class FilmsDetailsActivity extends AppCompatActivity {
 
     // Attributes
     private int userRating;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -326,9 +333,10 @@ public class FilmsDetailsActivity extends AppCompatActivity {
         // --------------- Comments ---------------
 
         FilmsDetailsActivity activity = this;
-        // TODO Get current film comments
+        // Get current film comments sorted by date
         db.collection("Comment")
                 .whereEqualTo("film_id", String.valueOf(movie.getId()))
+                .orderBy("date", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -346,20 +354,59 @@ public class FilmsDetailsActivity extends AppCompatActivity {
                                 String description = (String) data.get("description");
                                 Timestamp date = (Timestamp) data.get("date");
 
-                                String comment = userId + " (" + new SimpleDateFormat("dd-MM-yyyy").format(date.toDate()) + "):\n" + description + "\n";
-                                comments.add(comment);
+                                String comment = formatComment(userId, date, description);
                                 comments.add(comment);
                             }
 
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, comments);
-                            commentsListView.setAdapter(adapter);
+                            // Display all comments
+                            commentsAdapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, comments);
+                            commentsListView.setAdapter(commentsAdapter);
                         } else {
-                            Log.w("TAG", "Error getting documents.", task.getException());
+                            Log.w("GET COMMENTS", "Error getting documents.", task.getException());
                         }
                     }
                 });
-        // TODO Display all comments
 
+        // Write comment
+        btnComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get comment from comment field
+                String description = commentField.getText().toString();
+
+                // If comment not empty
+                if (description.length() > 0) {
+                    // Define comment object
+                    Map<String, Object> comment = new HashMap<>();
+                    comment.put("user_id", user.getEmail());
+                    comment.put("film_id", String.valueOf(movie.getId()));
+                    comment.put("date", new Timestamp(new Date()));
+                    comment.put("description", description);
+
+                    // Add comment to database
+                    db.collection("Comment").document()
+                            .set(comment)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // Update ListView adapter
+                                    String formatedComment = formatComment((String) comment.get("user_id"), (Timestamp) comment.get("date"), (String) comment.get("description"));
+                                    comments.add(0, formatedComment);
+                                    commentsAdapter.notifyDataSetChanged();
+
+                                    // Clear comment field
+                                    commentField.setText("");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("ERROR", "Error writing document", e);
+                                }
+                            });
+                }
+            }
+        });
 
         // --------------- END of comments ---------------
     }
@@ -423,6 +470,10 @@ public class FilmsDetailsActivity extends AppCompatActivity {
         return rating;
     }
 
+    private String formatComment(String userId, Timestamp date, String description) {
+        return userId + " (" + new SimpleDateFormat("dd-MM-yyyy").format(date.toDate()) + "):\n" + description + "\n";
+    }
+
     private void setViewComponents() {
         ratingBar = findViewById(R.id.detailsRatingBar);
         filmImage = findViewById(R.id.detailsFilmImage);
@@ -432,6 +483,9 @@ public class FilmsDetailsActivity extends AppCompatActivity {
         subtitleGenres = findViewById(R.id.detailsGenres);
         dropdown = findViewById(R.id.detailsRatingSpinner);
         commentsListView = findViewById(R.id.detailsListViewComments);
+
+        btnComment = findViewById(R.id.detailsButtonComment);
+        commentField = findViewById(R.id.detailsCommentTextField);
     }
 
 
