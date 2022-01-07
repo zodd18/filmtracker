@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,7 +20,10 @@ import com.app.filmtracker.recycler.ChatRecyclerViewAdapter;
 import com.app.filmtracker.vo.Friend;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -40,6 +45,7 @@ public class ChatActivity extends AppCompatActivity {
     private ProgressBar chatProgressBar;
     private TextView chatTextViewLoading;
     private RecyclerView recyclerView;
+    private FloatingActionButton chatAddFriendButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +56,7 @@ public class ChatActivity extends AppCompatActivity {
         chatProgressBar = findViewById(R.id.chatProgressBar);
         chatTextViewLoading = findViewById(R.id.chatTextViewLoading);
         recyclerView = findViewById(R.id.chatRecyclerView);
+        chatAddFriendButton = findViewById(R.id.chatAddFriendButton);
 
         chatProgressBar.setVisibility(View.VISIBLE);
 
@@ -64,6 +71,7 @@ public class ChatActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         thisUser = (FirebaseUser) SingletonMap.getInstance().get(SingletonMap.FIREBASE_USER_INSTANCE);
 
+        //Recycler View - Get friend list
         db.collection("Friend")
                 .whereEqualTo("user_email", thisUser.getEmail())
                 .get()
@@ -71,12 +79,19 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            List<String> emailFriendsList = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Map<String, String> mapList = (Map<String, String>) document.getData().get("friend_list");
+                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                            if(documents == null || documents.isEmpty()){
+                                //We need to show to the user that he doenst have friends
+                                chatProgressBar.setVisibility(View.INVISIBLE);
+                                chatTextViewLoading.setText(R.string.chat_without_friends);
+                            } else {
+                                //At least the user have 1 friend
+                                Map<String, String> mapList = (Map<String, String>) documents.get(0).getData().get("friend_list");
+                                List<String> emailFriendsList = new ArrayList<>();
                                 emailFriendsList.addAll(mapList.values());
                                 getFriendsDetails(emailFriendsList);
                             }
+
                         } else {
                             Toast.makeText(ChatActivity.this, "Ha ocurrido un error al cargar tu email(debug).",
                                     Toast.LENGTH_SHORT).show();
@@ -84,8 +99,33 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
 
+
+        //Action Floating Button - Add Friends
+        chatAddFriendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                View viewDialog = LayoutInflater.from(ChatActivity.this).inflate(R.layout.dialog_chat_add_friend, null, false);
+                launchDialog(viewDialog);
+            }
+        });
     }
 
+    //------------------Dialog add friends-------------------
+    private void launchDialog(View customView){
+        MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(ChatActivity.this);
+        dialog.setView(customView);
+        dialog.setTitle(R.string.chat_add_dialog_title);
+        dialog.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                System.out.println("---------------PULSADO EN OK");
+            }
+        });
+        dialog.show();
+    }
+
+
+    //------------------Load and display in recycler view------------------
     private List<Friend> getFriendsDetails(List<String> emailList)  {
         List<Friend> friendList = new ArrayList<>();
 
