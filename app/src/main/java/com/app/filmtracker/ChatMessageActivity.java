@@ -1,6 +1,7 @@
 package com.app.filmtracker;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,9 +17,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -38,11 +43,15 @@ public class ChatMessageActivity extends AppCompatActivity {
     private Friend thisFriend;
     private RecyclerView recyclerView;
 
+    private List<Message> messages;
+    private ChatMessageRecyclerViewAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_message);
 
+        messages = new ArrayList<>();
         //View Components
         chatMessageTopMenuToolbar = findViewById(R.id.chatMessageTopMenuToolbar);
         recyclerView = findViewById(R.id.chatMessageRecyclerView);
@@ -55,7 +64,11 @@ public class ChatMessageActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         //App Bar Layout - Top menu
-        chatMessageTopMenuToolbar.setTitle(thisFriend.getFullName());
+        if(thisFriend.getFullName() == null || thisFriend.getFullName().isEmpty())
+            chatMessageTopMenuToolbar.setTitle(thisFriend.getUsername());
+        else
+            chatMessageTopMenuToolbar.setTitle(thisFriend.getFullName());
+
         chatMessageTopMenuToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,8 +76,10 @@ public class ChatMessageActivity extends AppCompatActivity {
             }
         });
 
-
-        db.collection("Message")
+        //RecyclerView - Get data from DB, configure the recycler view with the data
+        // add finally, Listen add events in the db
+        configureRecyclerView(messages);
+        /*db.collection("Message")
                 .whereEqualTo("from", thisUser.getEmail())
                 .whereEqualTo("to", thisFriend.getEmail())
                 .get()
@@ -73,7 +88,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful()){
                             List<DocumentSnapshot> documentsFrom = task.getResult().getDocuments();
-                            List<Message> messages = new ArrayList<>();
+
                             for(DocumentSnapshot doc : documentsFrom){
                                 Message m = new Message();
                                 m.setText((String) doc.getData().get("text"));
@@ -106,7 +121,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                                     });
                         }
                     }
-                });
+                });*/
 
     }
 
@@ -114,7 +129,72 @@ public class ChatMessageActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-        ChatMessageRecyclerViewAdapter adapter = new ChatMessageRecyclerViewAdapter(this, messageList, thisUser.getEmail());
+
+        adapter = new ChatMessageRecyclerViewAdapter(this, messageList, thisUser.getEmail());
         recyclerView.setAdapter(adapter);
+        addSnapshotListenerBetweenUsers(thisUser.getEmail(), thisFriend.getEmail());
+    }
+
+
+    //Provide the realtime chat
+    private void addSnapshotListenerBetweenUsers(String email1, String email2){
+        db.collection("Message")
+                .whereEqualTo("from", email1)
+                .whereEqualTo("to", email2)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        boolean existsNewMessages = false;
+
+                        for(DocumentChange dc : value.getDocumentChanges()){
+                            if(dc.getType().equals(DocumentChange.Type.ADDED)){
+                                QueryDocumentSnapshot doc = dc.getDocument();
+                                Message m = new Message();
+                                m.setText((String) doc.getData().get("text"));
+                                m.setFrom(email1);
+                                m.setTo(email2);
+                                m.setDate(doc.getTimestamp("time").toDate());
+                                messages.add(m);
+                                existsNewMessages = true;
+                            }
+                        }
+                        if(existsNewMessages){
+                            Collections.sort(messages, Comparator.comparing(Message::getDate));
+                            adapter.notifyDataSetChanged();
+                        }
+
+                    }
+                });
+
+        db.collection("Message")
+                .whereEqualTo("from", email2)
+                .whereEqualTo("to", email1)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        boolean existsNewMessages = false;
+
+                        for(DocumentChange dc : value.getDocumentChanges()){
+                            if(dc.getType().equals(DocumentChange.Type.ADDED)){
+                                QueryDocumentSnapshot doc = dc.getDocument();
+                                Message m = new Message();
+                                m.setText((String) doc.getData().get("text"));
+                                m.setFrom(email2);
+                                m.setTo(email1);
+                                m.setDate(doc.getTimestamp("time").toDate());
+                                messages.add(m);
+                                existsNewMessages = true;
+                            }
+                        }
+                        if(existsNewMessages){
+                            Collections.sort(messages, Comparator.comparing(Message::getDate));
+                            adapter.notifyDataSetChanged();
+                        }
+
+                    }
+                });
+
+
+
     }
 }
