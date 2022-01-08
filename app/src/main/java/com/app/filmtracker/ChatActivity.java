@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -256,8 +257,17 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         chatTextViewLoading.setVisibility(View.INVISIBLE);
         chatProgressBar.setVisibility(View.INVISIBLE);
-        adapter = new ChatRecyclerViewAdapter(this, friends);
 
+        adapter = new ChatRecyclerViewAdapter(this, friends);
+        adapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ChatActivity.this, ChatMessageActivity.class);
+                Friend actualChat = friends.get(recyclerView.getChildAdapterPosition(view));
+                SingletonMap.getInstance().put("ACTUAL_CHAT", actualChat);
+                startActivity(intent);
+            }
+        });
         recyclerView.setAdapter(adapter);
 
     }
