@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.app.filmtracker.poo.SingletonMap;
 import com.app.filmtracker.recycler.ChatMessageRecyclerViewAdapter;
@@ -16,6 +18,7 @@ import com.app.filmtracker.vo.Message;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -31,7 +34,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChatMessageActivity extends AppCompatActivity {
 
@@ -39,11 +44,17 @@ public class ChatMessageActivity extends AppCompatActivity {
     private FirebaseUser thisUser;
     private FirebaseFirestore db;
 
+    //View components
     private MaterialToolbar chatMessageTopMenuToolbar;
-    private Friend thisFriend;
+    private EditText chatMessageEditText;
     private RecyclerView recyclerView;
+    private ImageButton chatMessageSendButton;
 
+    //Data
+    private Friend thisFriend;
     private List<Message> messages;
+
+    //Custom Recycler View Adapter
     private ChatMessageRecyclerViewAdapter adapter;
 
     @Override
@@ -52,9 +63,12 @@ public class ChatMessageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat_message);
 
         messages = new ArrayList<>();
+
         //View Components
         chatMessageTopMenuToolbar = findViewById(R.id.chatMessageTopMenuToolbar);
         recyclerView = findViewById(R.id.chatMessageRecyclerView);
+        chatMessageEditText = findViewById(R.id.chatMessageEditText);
+        chatMessageSendButton = findViewById(R.id.chatMessageSendButton);
 
         //SingletonMap
         this.thisFriend = (Friend) SingletonMap.getInstance().get("ACTUAL_CHAT");
@@ -76,8 +90,20 @@ public class ChatMessageActivity extends AppCompatActivity {
             }
         });
 
-        //RecyclerView - Get data from DB, configure the recycler view with the data
-        // add finally, Listen add events in the db
+        chatMessageSendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String text = chatMessageEditText.getText().toString();
+                if(text!=null && !text.trim().isEmpty()){
+                    sendMessageToEmail(text.trim(), thisUser.getEmail(), thisFriend.getEmail());
+                    chatMessageEditText.setText("");
+                }
+
+            }
+        });
+
+
+        //RecyclerView - Configure the recycler view and then Listen Add events in the db
         configureRecyclerView(messages);
         /*db.collection("Message")
                 .whereEqualTo("from", thisUser.getEmail())
@@ -194,7 +220,15 @@ public class ChatMessageActivity extends AppCompatActivity {
                     }
                 });
 
+    }
 
-
+    private void sendMessageToEmail(String message, String emailFrom, String emailTo){
+        Map<String, Object> data = new HashMap<>();
+        data.put("from", emailFrom);
+        data.put("to", emailTo);
+        data.put("time", Timestamp.now());
+        data.put("text", message);
+        db.collection("Message")
+                .add(data);
     }
 }
