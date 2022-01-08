@@ -9,5 +9,5 @@
         android:topLeftRadius="0dp"
         android:topRightRadius="0dp" />
 
-    <solid android:color="?attr/colorOnPrimary" />
+    <solid android:color="?attr/customBgColor" />
 </shape>
