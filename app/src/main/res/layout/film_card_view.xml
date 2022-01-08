@@ -2,59 +2,57 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/customBgColorSecondary"
     android:layout_margin="8dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="550dp"
+        android:background="?attr/customBgColorSecondary"
         android:orientation="vertical">
 
         <!-- Media -->
         <ImageView
             android:id="@+id/filmCardImage"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="280dp"
+            android:background="?attr/customBgColorSecondary"
             android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_google_foreground" />
 
-        <LinearLayout
+        <!-- Buttons -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/customBgColorSecondary"
             android:orientation="vertical"
             android:paddingLeft="16dp"
             android:paddingTop="16dp"
-            android:paddingRight="16dp">
+            android:paddingRight="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filmCardImage">
 
             <!-- Title, secondary and supporting text -->
+
             <TextView
                 android:id="@+id/filmCardTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?attr/customBgColorSecondary"
                 android:minHeight="70dp"
-                android:text="Titulo"
-                android:textAppearance="?attr/textAppearanceHeadline6" />
-
-            <TextView
-                android:id="@+id/filmCardSubtitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:minHeight="80dp"
-                android:text="Texto secondario (Generos)"
-                android:textAppearance="?attr/textAppearanceBody2"
-                android:textColor="?android:attr/textColorSecondary" />
-
-            <RatingBar
-                android:id="@+id/ratingBar"
-                style="?android:attr/ratingBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="5"
-                android:paddingTop="8dp"
-                android:rating="0" />
+                android:text="Title"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <!--<TextView
             android:id="@+id/filmCardDescription"
@@ -65,18 +63,24 @@
             android:textAppearance="?attr/textAppearanceBody2"
             android:textColor="?android:attr/textColorSecondary" />-->
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Buttons -->
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:background="?attr/customBgColorSecondary"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+            app:layout_constraintVertical_bias="1.0"
+            tools:layout_editor_absoluteX="0dp">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="?attr/customBgColorSecondary"
                 android:orientation="vertical">
 
 
@@ -88,23 +92,8 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
+                android:background="?attr/customBgColorSecondary"
                 android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/filmCardButtonAbout"
-                    style="?attr/borderlessButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/text_card_about" />
-
-                <ImageButton
-                    android:id="@+id/filmCardButtonLike"
-                    style="?attr/borderlessButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:minWidth="40dip"
-                    android:minHeight="20dip"
-                    android:src="@drawable/ic_baseline_favorite_24" />
 
                 <!--<ImageButton
                 android:id="@+id/filmCardButtonShare"
@@ -114,10 +103,69 @@
                 android:src="@drawable/ic_baseline_share_24" />-->
             </LinearLayout>
 
+            <ImageButton
+                android:id="@+id/filmCardButtonLike"
+                style="?attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="4dp"
+                android:background="?attr/customBgColorSecondary"
+                android:minWidth="40dip"
+                android:minHeight="20dip"
+                android:src="@drawable/ic_baseline_favorite_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
+            <Button
+                android:id="@+id/filmCardButtonAbout"
+                style="?attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="11dp"
+                android:background="?attr/customBgColorSecondary"
+                android:text="@string/text_card_about"
+                android:textAlignment="viewStart"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
 
 
-    </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/filmCardSubtitle"
+            android:layout_width="248dp"
+            android:layout_height="53dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:background="?attr/customBgColorSecondary"
+            android:minHeight="80dp"
+            android:text="Genres"
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:textColor="?android:attr/textColorSecondary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_marginBottom="12dp"
+            android:background="?attr/customBgColorSecondary"
+            android:indeterminateTint="?attr/colorOnSecondary"
+            android:numStars="5"
+            android:paddingTop="8dp"
+            android:progressTint="?attr/colorSecondary"
+            android:rating="0"
+            android:secondaryProgressTint="?attr/colorOnSecondary"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

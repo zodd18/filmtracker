@@ -40,6 +40,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -98,7 +99,7 @@ public class LikesFragment extends Fragment {
     }
 
     private void fetchGenreAndThenStartRecyclerView(){
-        String url = "https://api.themoviedb.org/3/genre/movie/list?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language=" + R.string.language;
+        String url = "https://api.themoviedb.org/3/genre/movie/list?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language=" + getString(R.string.language);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -170,6 +171,15 @@ public class LikesFragment extends Fragment {
                                                             try {
                                                                 Movie movie = gson.fromJson(response.toString(), new TypeToken<Movie>(){}.getType());
 
+                                                                // Add genres id to each movie
+                                                                JSONArray genreIdsRaw = ((JSONArray) response.get("genres"));
+                                                                int[] genreIds = new int[genreIdsRaw.length()];
+                                                                for (int i = 0; i < genreIdsRaw.length(); i++) {
+                                                                    JSONObject g = (JSONObject) genreIdsRaw.get(i);
+                                                                    genreIds[i] = (int) g.get("id");
+                                                                }
+                                                                movie.setGenre_ids(genreIds);
+
                                                                 recyclerViewAdapter.addNewDataAndNotify(Arrays.asList(movie));
                                                                 System.out.println(response);
                                                             } catch (Exception e) {
@@ -207,7 +217,7 @@ public class LikesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER) != null) {
+        if (SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER) != null && recyclerViewAdapter != null) {
             CustomRecyclerViewAdapter.ViewHolder holder = (CustomRecyclerViewAdapter.ViewHolder) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER);
             int position = (int) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_POSITION);
             // Updates this film on the previous view

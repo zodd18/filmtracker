@@ -8,13 +8,15 @@
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSecondary">@color/gray_blue_900</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
 
         <!-- Customize your theme here. -->
         <!-- Si queremos meter algo aqui propio, primero debemos definirlo en attrs.xml (dentro de la carpeta values)-->
-        <item name="customBgColor">?attr/colorOnPrimary</item>
+        <item name="customBgColor">@color/black</item>
+        <item name="customBgColorSecondary">@color/black_secondary</item>
+
         <item name="buttonSecondaryBgColor">@color/gray_blue_900</item>
     </style>
 </resources>

@@ -80,7 +80,14 @@ public class FilmsFragment extends Fragment {
         filmsRecyclerView = view.findViewById(R.id.favoriteFilmsRecyclerView);
         genresList = new ArrayList<>();
         gson = new Gson();
-        fetchGenreAndThenStartRecyclerView();
+
+        if (SingletonMap.getInstance().get(SingletonMap.GENRES) == null) {
+            fetchGenreAndThenStartRecyclerView();
+        } else {
+            genresList = (List<Genre>) SingletonMap.getInstance().get(SingletonMap.GENRES);
+            createAndStartRecyclerView();
+        }
+
         return view;
     }
 
@@ -123,33 +130,38 @@ public class FilmsFragment extends Fragment {
         adapter.setOnLoadCustomListener(new OnLoadCustomListener() {
             @Override
             public void load() {
-                String url = "https://api.themoviedb.org/3/discover/movie?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language="+ getString(R.string.language) +"&sort_by=popularity.desc&include_adult=false&include_video=false&page="+ adapter.getLastPage() +"&with_watch_monetization_types=flatrate";
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                        (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    adapter.setLastPage(response.getInt("page") + 1);
-                                    JSONArray movieJsonList = response.getJSONArray("results");
-                                    Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
-                                    List<Movie> movList = gson.fromJson(movieJsonList.toString(), listType);
-                                    adapter.addNewDataAndNotify(movList);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String url = "https://api.themoviedb.org/3/discover/movie?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language="+ getString(R.string.language) +"&sort_by=popularity.desc&include_adult=false&include_video=false&page="+ adapter.getLastPage() +"&with_watch_monetization_types=flatrate";
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        try {
+                                            adapter.setLastPage(response.getInt("page") + 1);
+                                            JSONArray movieJsonList = response.getJSONArray("results");
+                                            Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
+                                            List<Movie> movList = gson.fromJson(movieJsonList.toString(), listType);
+                                            adapter.addNewDataAndNotify(movList);
 
-                                    System.out.println(response);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                            System.out.println(response);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
 
-                            }
-                        }, new Response.ErrorListener() {
+                                    }
+                                }, new Response.ErrorListener() {
 
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // TODO: Handle error
-                                System.out.println("------Error en el Volley");
-                            }
-                        });
-                requestQueue.add(jsonObjectRequest);
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        // TODO: Handle error
+                                        System.out.println("------Error en el Volley");
+                                    }
+                                });
+                        requestQueue.add(jsonObjectRequest);
+                    }
+                }).start();
             }
         });
 
