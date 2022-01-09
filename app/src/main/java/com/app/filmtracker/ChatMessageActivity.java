@@ -187,6 +187,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                         if(existsNewMessages){
                             Collections.sort(messages, Comparator.comparing(Message::getDate));
                             adapter.notifyDataSetChanged();
+                            recyclerView.scrollToPosition(messages.size() - 1);
                         }
 
                     }
@@ -215,6 +216,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                         if(existsNewMessages){
                             Collections.sort(messages, Comparator.comparing(Message::getDate));
                             adapter.notifyDataSetChanged();
+                            recyclerView.scrollToPosition(messages.size() - 1);
                         }
 
                     }
