@@ -1,16 +1,18 @@
 package com.app.filmtracker;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,7 +24,6 @@ import com.app.filmtracker.recycler.ChatRecyclerViewAdapter;
 import com.app.filmtracker.vo.Friend;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,15 +35,40 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ChatActivity extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link ChatPrivateFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class ChatPrivateFragment extends Fragment {
+    
+
+
+    public ChatPrivateFragment() {
+        // Required empty public constructor
+    }
+
+
+    // TODO: Rename and change types and number of parameters
+    public static ChatPrivateFragment newInstance() {
+        ChatPrivateFragment fragment = new ChatPrivateFragment();
+
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+    }
+
 
     //Android Volley
     private RequestQueue requestQueue;
@@ -57,29 +83,31 @@ public class ChatActivity extends AppCompatActivity {
     private TextView chatTextViewLoading;
     private RecyclerView recyclerView;
     private FloatingActionButton chatAddFriendButton;
-    private MaterialToolbar topMenuToolbar;
 
 
     ChatRecyclerViewAdapter adapter;
 
+
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_chat_private, container, false);
 
         //View Components
-        chatProgressBar = findViewById(R.id.chatProgressBar);
-        chatTextViewLoading = findViewById(R.id.chatTextViewLoading);
-        recyclerView = findViewById(R.id.chatRecyclerView);
-        chatAddFriendButton = findViewById(R.id.chatAddFriendButton);
-        topMenuToolbar = findViewById(R.id.chatTopMenuToolbar);
+        chatProgressBar = view.findViewById(R.id.chatProgressBar);
+        chatTextViewLoading = view.findViewById(R.id.chatTextViewLoading);
+        recyclerView = view.findViewById(R.id.chatRecyclerView);
+        chatAddFriendButton = view.findViewById(R.id.chatAddFriendButton);
 
         chatProgressBar.setVisibility(View.VISIBLE);
 
         //Android Volley
         requestQueue = (RequestQueue) SingletonMap.getInstance().get(SingletonMap.REQUEST_QUEUE);
         if(requestQueue == null){
-            requestQueue = Volley.newRequestQueue(this);
+            requestQueue = Volley.newRequestQueue(getContext());
             SingletonMap.getInstance().put(SingletonMap.REQUEST_QUEUE, requestQueue);
         }
 
@@ -89,6 +117,24 @@ public class ChatActivity extends AppCompatActivity {
         thisUser = (FirebaseUser) SingletonMap.getInstance().get(SingletonMap.FIREBASE_USER_INSTANCE);
 
         //Recycler View - Get friend list
+        loadFriendsAndConfRecycler();
+
+
+
+        //Action Floating Button - Add Friends
+        chatAddFriendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                View viewDialog = LayoutInflater.from(getContext()).inflate(R.layout.dialog_chat_add_friend, null, false);
+                launchDialog(viewDialog);
+            }
+        });
+
+        return view;
+    }
+
+
+    private void loadFriendsAndConfRecycler(){
         List<Friend> friendList = (List<Friend>) SingletonMap.getInstance().get("FRIEND_LIST");
         if(friendList == null) {
 
@@ -121,7 +167,7 @@ public class ChatActivity extends AppCompatActivity {
                                 }
 
                             } else {
-                                Toast.makeText(ChatActivity.this, "Ha ocurrido un error al cargar tu email(debug).",
+                                Toast.makeText(getContext(), "Ha ocurrido un error al cargar tu email(debug).",
                                         Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -130,31 +176,14 @@ public class ChatActivity extends AppCompatActivity {
             configureRecyclerView(friendList);
         }
 
-
-        //App Bar Layout - Top menu
-        topMenuToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        //Action Floating Button - Add Friends
-        chatAddFriendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                View viewDialog = LayoutInflater.from(ChatActivity.this).inflate(R.layout.dialog_chat_add_friend, null, false);
-                launchDialog(viewDialog);
-            }
-        });
     }
 
     //------------------Dialog add friends-------------------
     private void launchDialog(View customView){
-        MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(ChatActivity.this);
+        MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(getContext());
         TextInputLayout textInputLayout = customView.findViewById(R.id.dialogChatTextInput);
         dialog.setView(customView);
-        dialog.setBackground(ContextCompat.getDrawable(this, R.drawable.shape_corners_curved));
+        dialog.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.shape_corners_curved));
         dialog.setTitle(R.string.chat_add_dialog_title);
         dialog.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
             @Override
@@ -171,7 +200,7 @@ public class ChatActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     List<DocumentSnapshot> documents = task.getResult().getDocuments();
                                     if(documents == null || documents.isEmpty()) {
-                                        Toast.makeText(ChatActivity.this, "No se ha encontrado el usuario(debug).",
+                                        Toast.makeText(getContext(), "No se ha encontrado el usuario(debug).",
                                                 Toast.LENGTH_SHORT).show();
                                     } else {
                                         Friend f = new Friend();
@@ -195,7 +224,7 @@ public class ChatActivity extends AppCompatActivity {
                                                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                        Toast.makeText(ChatActivity.this, "Se añadió correctamente .",
+                                                        Toast.makeText(getContext(), "Se añadió correctamente .",
                                                                 Toast.LENGTH_SHORT).show();
 
                                                     }
@@ -204,7 +233,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
                                 } else {
-                                    Toast.makeText(ChatActivity.this, "No se ha encontrado el usuario(debug).",
+                                    Toast.makeText(getContext(), "No se ha encontrado el usuario(debug).",
                                             Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -245,7 +274,7 @@ public class ChatActivity extends AppCompatActivity {
                             if(configureRecyclerView)
                                 configureRecyclerView(friendList);
                         } else {
-                            Toast.makeText(ChatActivity.this, "Ha ocurrido un error al los datos de tus amigos(debug).",
+                            Toast.makeText(getContext(), "Ha ocurrido un error al los datos de tus amigos(debug).",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -254,15 +283,15 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void configureRecyclerView(List<Friend> friends){
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         chatTextViewLoading.setVisibility(View.INVISIBLE);
         chatProgressBar.setVisibility(View.INVISIBLE);
 
-        adapter = new ChatRecyclerViewAdapter(this, friends);
+        adapter = new ChatRecyclerViewAdapter(getContext(), friends);
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ChatActivity.this, ChatMessageActivity.class);
+                Intent intent = new Intent(getContext(), ChatMessageActivity.class);
                 Friend actualChat = friends.get(recyclerView.getChildAdapterPosition(view));
                 SingletonMap.getInstance().put("ACTUAL_CHAT", actualChat);
                 startActivity(intent);
@@ -271,6 +300,4 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
     }
-
-
 }

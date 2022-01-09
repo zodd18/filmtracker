@@ -52,4 +52,6 @@
     <string name="text_rating">Puntuación:</string>
     <string name="text_favorite">Favorita:</string>
     <string name="button_welcome">BIENVENIDO</string>
+    <string name="principal_chat_private">Privado</string>
+    <string name="principal_chat_group">Grupos</string>
 </resources>
