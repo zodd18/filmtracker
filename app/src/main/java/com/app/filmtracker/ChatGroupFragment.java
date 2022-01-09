@@ -144,10 +144,10 @@ public class ChatGroupFragment extends Fragment {
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Intent intent = new Intent(getContext(), ChatMessageActivity.class);
+                Intent intent = new Intent(getContext(), ChatMessageGroupActivity.class);
                 Group actualGroup = groups.get(recyclerView.getChildAdapterPosition(view));
-                SingletonMap.getInstance().put("ACTUAL_GROUP", actualGroup);
-                startActivity(intent);*/
+                SingletonMap.getInstance().put(SingletonMap.CHAT_ACTUAL_GROUP, actualGroup);
+                startActivity(intent);
             }
         });
         recyclerView.setAdapter(adapter);

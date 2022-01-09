@@ -13,6 +13,7 @@ public class SingletonMap extends HashMap<String, Object> {
     public static final String CURRENT_FILMS_RECYCLER_VIEW = "CURRENT_FILMS_RECYCLER_VIEW";
     public static final String CURRENT_FILMS_HOLDER = "CURRENT_FILMS_HOLDER";
     public static final String CURRENT_FILMS_POSITION = "CURRENT_FILMS_POSITION";
+    public static final String CHAT_ACTUAL_GROUP = "CHAT_ACTUAL_GROUP";
 
     //Singleton Holder
     private static class SingletonHolder {

@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FilmTracker">
         <activity
+            android:name=".ChatMessageGroupActivity"
+            android:exported="false" />
+        <activity
             android:name=".PrincipalChatActivity"
             android:exported="false" />
         <activity
