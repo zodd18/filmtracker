@@ -59,6 +59,8 @@ public class PrincipalChatActivity extends AppCompatActivity {
 
     }
 
+
+    //-----------VIEW PAGER ADAPTER
     private void configViewPager2Adapter(){
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentAdapter = new CustomViewPagerAdapter(fragmentManager, getLifecycle());

@@ -54,4 +54,5 @@
     <string name="button_welcome">BIENVENIDO</string>
     <string name="principal_chat_private">Privado</string>
     <string name="principal_chat_group">Grupos</string>
+    <string name="chat_spinner_loading_group">Cargando grupos</string>
 </resources>

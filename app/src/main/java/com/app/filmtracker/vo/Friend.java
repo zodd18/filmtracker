@@ -54,4 +54,12 @@ public class Friend {
     public void setProfileImage(Bitmap profileImage) {
         this.profileImage = profileImage;
     }
+
+
+    public String getFullNameOrEmail(){
+        if(this.fullName!= null && !this.fullName.isEmpty())
+            return this.fullName;
+        else
+            return this.email;
+    }
 }
