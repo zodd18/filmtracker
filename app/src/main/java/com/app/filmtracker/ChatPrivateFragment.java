@@ -120,7 +120,6 @@ public class ChatPrivateFragment extends Fragment {
         loadFriendsAndConfRecycler();
 
 
-
         //Action Floating Button - Add Friends
         chatAddFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override

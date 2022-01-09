@@ -12,7 +12,9 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
+import android.view.View;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ public class PrincipalChatActivity extends AppCompatActivity {
 
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
-
+    private MaterialToolbar topMenuToolbar;
 
     //Fragments
     private ChatPrivateFragment chatPrivateFragment;
@@ -38,14 +40,22 @@ public class PrincipalChatActivity extends AppCompatActivity {
         //View Components
         viewPager = findViewById(R.id.principalChatViewPager);
         tabLayout = findViewById(R.id.principalChatTabLayout);
+        topMenuToolbar = findViewById(R.id.principalChatTopMenuToolbar);
 
         //Fragments
         chatPrivateFragment = new ChatPrivateFragment();
         chatGroupFragment = new ChatGroupFragment();
 
-
         //Configure ViewPager2Adapter
         configViewPager2Adapter();
+
+        //Material Toolbar - Top menu
+        topMenuToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
     }
 
