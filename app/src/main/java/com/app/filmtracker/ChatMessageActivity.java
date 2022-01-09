@@ -156,7 +156,7 @@ public class ChatMessageActivity extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        adapter = new ChatMessageRecyclerViewAdapter(this, messageList, thisUser.getEmail());
+        adapter = new ChatMessageRecyclerViewAdapter(this, messageList, thisUser.getEmail(), false);
         recyclerView.setAdapter(adapter);
         addSnapshotListenerBetweenUsers(thisUser.getEmail(), thisFriend.getEmail());
     }

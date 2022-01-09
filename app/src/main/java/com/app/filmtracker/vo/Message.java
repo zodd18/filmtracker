@@ -7,6 +7,7 @@ public class Message {
     private String to;
     private String text;
     private Date date;
+    private String fromName;
 
     public String getFrom() {
         return from;
@@ -38,5 +39,13 @@ public class Message {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getFromName() {
+        return fromName;
+    }
+
+    public void setFromName(String fromName) {
+        this.fromName = fromName;
     }
 }

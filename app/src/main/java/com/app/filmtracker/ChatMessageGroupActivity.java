@@ -104,7 +104,7 @@ public class ChatMessageGroupActivity extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        adapter = new ChatMessageRecyclerViewAdapter(this, messages, thisUser.getEmail());
+        adapter = new ChatMessageRecyclerViewAdapter(this, messages, thisUser.getEmail(), true);
         recyclerView.setAdapter(adapter);
     }
 
@@ -121,6 +121,7 @@ public class ChatMessageGroupActivity extends AppCompatActivity {
                                 Message m = new Message();
                                 m.setText((String) doc.getData().get("text"));
                                 m.setFrom((String) doc.getData().get("from"));
+                                m.setFromName((String) doc.getData().get("from_name"));
                                 m.setDate(doc.getTimestamp("time").toDate());
                                 messages.add(m);
 
@@ -140,6 +141,12 @@ public class ChatMessageGroupActivity extends AppCompatActivity {
     private void sendData(String text){
         Map<String, Object> data = new HashMap<>();
         data.put("from", thisUser.getEmail());
+        String name;
+        if(thisUser.getDisplayName() != null && !thisUser.getDisplayName().isEmpty())
+            name = thisUser.getDisplayName();
+        else
+            name = thisUser.getEmail();
+        data.put("from_name", name);
         data.put("group_id", thisGroup.getId());
         data.put("text", text);
         data.put("time", Timestamp.now());
