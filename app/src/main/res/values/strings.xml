@@ -58,4 +58,8 @@
     <string name="principal_chat_group">Groups</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="chat_spinner_loading_group">Loading groups</string>
+    <string name="dialog_group_name">Enter a name for the group</string>
+    <string name="dialog_group_name_hint">Group name</string>
+    <string name="dialog_create_group">Create group</string>
+    <string name="dialog_name_cant_be_null">The group name cannot be empty</string>
 </resources>

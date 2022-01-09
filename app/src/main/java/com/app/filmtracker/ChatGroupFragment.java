@@ -127,8 +127,7 @@ public class ChatGroupFragment extends Fragment {
         chatAddGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                View viewDialog = LayoutInflater.from(getContext()).inflate(R.layout.dialog_chat_add_friend, null, false);
-                launchDialog(viewDialog);
+                launchDialog();
             }
         });
 
@@ -182,7 +181,7 @@ public class ChatGroupFragment extends Fragment {
 
     }
 
-    private void launchDialog(View customView){
+    private void launchDialog(){
         List<Friend> friendList = (List<Friend>) SingletonMap.getInstance().get("FRIEND_LIST");
         if(friendList!=null && !friendList.isEmpty()){
 
@@ -212,25 +211,51 @@ public class ChatGroupFragment extends Fragment {
                 }
             });
 
-            dialog.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+            dialog.setPositiveButton(R.string.dialog_create_group, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     System.out.println("---------------PULSADO EN OK");
+
                     List<String> emailList = new ArrayList<>();
                     for(Integer pos : posFriends){
                         emailList.add(friendList.get(pos).getEmail());
                     }
                     emailList.add(thisUser.getEmail());
-                    Map<String, Object> data = new HashMap<>();
-                    data.put("users_email", emailList);
-                    data.put("name", "Grupos lo mas");
-                    db.collection("Group")
-                            .add(data);
+                    launchSecondDialog(emailList);
+
                 }
             });
             dialog.show();
         }
 
+    }
+
+    private void launchSecondDialog(List<String> emailList){
+        View customView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_chat_group_name, null, false);
+        TextInputLayout textInputLayout = customView.findViewById(R.id.dialogChatGroupTextInput);
+
+        MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(getContext());
+        dialog.setView(customView);
+        dialog.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.shape_corners_curved));
+        dialog.setTitle("Añade un nombre al grupo");
+        dialog.setPositiveButton(R.string.dialog_create_group, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String groupName = textInputLayout.getEditText().getText().toString().trim();
+                if(!groupName.isEmpty()){
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("users_email", emailList);
+                    data.put("name", groupName);
+                    db.collection("Group")
+                            .add(data);
+                } else {
+                    Toast.makeText(getContext(), R.string.dialog_name_cant_be_null,
+                            Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+        dialog.show();
     }
 
 
