@@ -96,8 +96,8 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
                 onLoadCustomListener.load();
             } else {
                 Movie currentMovie = data.get(position);
-                System.out.println("            POSITION: " + position);
-                System.out.println("            CURRENT MOVIE: " + currentMovie.getTitle());
+//                System.out.println("            POSITION: " + position);
+//                System.out.println("            CURRENT MOVIE: " + currentMovie.getTitle());
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
                 // --------------- About ---------------
@@ -109,19 +109,19 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
                         Intent intent = new Intent(ctx, FilmsDetailsActivity.class);
                         ctx.startActivity(intent);
 
-                        System.out.println("NOMBRE DE LA CLASE: ");
-                        System.out.println(getClass());
-                        System.out.println(getClass().getSimpleName());
-                        System.out.println(getClass().getName());
-                        Map<String, Object> movie = new HashMap<>();
+////                        System.out.println("NOMBRE DE LA CLASE: ");
+////                        System.out.println(getClass());
+////                        System.out.println(getClass().getSimpleName());
+////                        System.out.println(getClass().getName());
+////                        Map<String, Object> movie = new HashMap<>();
                         SingletonMap.getInstance().put(SingletonMap.CURRENT_FILM_DETAILS, currentMovie);
-                        SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_RECYCLER_VIEW, this);
-                        SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_HOLDER, holder);
-                        SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_POSITION, position);
+////                        SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_RECYCLER_VIEW, this);
+////                        SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_HOLDER, holder);
+////                        SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_POSITION, position);
                     }
                 };
                 holder.btnAbout.setOnClickListener(detailsListener);
-                holder.card.setOnClickListener(detailsListener);
+//                holder.card.setOnClickListener(detailsListener);
 
                 // --------------- END of About ---------------
 
@@ -180,7 +180,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
                                 if (ratings == 0)
                                     holder.ratingBar.setRating(0);
                                 else {
-                                    System.out.println("SUM: " + sum + ", RATINGS: " + ratings);
+//                                    System.out.println("SUM: " + sum + ", RATINGS: " + ratings);
                                     holder.ratingBar.setRating(sum/ratings/2);
                                 }
                             }
@@ -383,20 +383,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
             onClickListener.onClick(view);
     }
 
-    // convenience method for getting data at click position
-    /*Object getItem(int id) {
-        return data.get(id);
-    }*/
-
-
-
-    // allows clicks events to be caught
-    /*void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
-    }*/
-
-    // parent activity will implement this method to respond to click events
-    /*public interface ItemClickListener {
-        void onItemClick(View view, int position);
-    }*/
+    public Movie getMovieByPosition(int position){
+        return this.data.get(position);
+    }
 }

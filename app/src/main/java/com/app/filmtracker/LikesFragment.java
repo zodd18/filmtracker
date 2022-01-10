@@ -1,5 +1,6 @@
 package com.app.filmtracker;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -150,7 +151,6 @@ public class LikesFragment extends Fragment {
                             // ------------------------------------
 
                             //Fetch data
-                            List<Movie> moviesList = new ArrayList<>();
                             filmsRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2)); //new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
                             recyclerViewAdapter = new CustomRecyclerViewAdapter(getActivity(), genresList);
@@ -203,6 +203,17 @@ public class LikesFragment extends Fragment {
                                     System.out.println("ITEM COUNT: " + recyclerViewAdapter.getItemCount());
                                 }
                             });
+
+                            recyclerViewAdapter.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Movie currentMovie = recyclerViewAdapter.getMovieByPosition(filmsRecyclerView.getChildAdapterPosition(view));
+                                    SingletonMap.getInstance().put(SingletonMap.CURRENT_FILM_DETAILS, currentMovie);
+                                    Intent intent = new Intent(getContext(), FilmsDetailsActivity.class);
+                                    startActivity(intent);
+                                }
+                            });
+
                             filmsRecyclerView.setAdapter(recyclerViewAdapter);
 
                             // ------------------------------------
@@ -217,11 +228,11 @@ public class LikesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER) != null && recyclerViewAdapter != null) {
-            CustomRecyclerViewAdapter.ViewHolder holder = (CustomRecyclerViewAdapter.ViewHolder) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER);
-            int position = (int) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_POSITION);
-            // Updates this film on the previous view
-            recyclerViewAdapter.onBindViewHolder(holder, position);
-        }
+//        if (SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER) != null && recyclerViewAdapter != null) {
+//            CustomRecyclerViewAdapter.ViewHolder holder = (CustomRecyclerViewAdapter.ViewHolder) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER);
+//            int position = (int) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_POSITION);
+//            // Updates this film on the previous view
+//            recyclerViewAdapter.onBindViewHolder(holder, position);
+//        }
     }
 }

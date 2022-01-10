@@ -1,5 +1,6 @@
 package com.app.filmtracker;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -130,38 +131,45 @@ public class FilmsFragment extends Fragment {
         adapter.setOnLoadCustomListener(new OnLoadCustomListener() {
             @Override
             public void load() {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String url = "https://api.themoviedb.org/3/discover/movie?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language="+ getString(R.string.language) +"&sort_by=popularity.desc&include_adult=false&include_video=false&page="+ adapter.getLastPage() +"&with_watch_monetization_types=flatrate";
-                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        try {
-                                            adapter.setLastPage(response.getInt("page") + 1);
-                                            JSONArray movieJsonList = response.getJSONArray("results");
-                                            Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
-                                            List<Movie> movList = gson.fromJson(movieJsonList.toString(), listType);
-                                            adapter.addNewDataAndNotify(movList);
 
-                                            System.out.println(response);
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
+                String url = "https://api.themoviedb.org/3/discover/movie?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language="+ getString(R.string.language) +"&sort_by=popularity.desc&include_adult=false&include_video=false&page="+ adapter.getLastPage() +"&with_watch_monetization_types=flatrate";
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                        (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    adapter.setLastPage(response.getInt("page") + 1);
+                                    JSONArray movieJsonList = response.getJSONArray("results");
+                                    Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
+                                    List<Movie> movList = gson.fromJson(movieJsonList.toString(), listType);
+                                    adapter.addNewDataAndNotify(movList);
 
-                                    }
-                                }, new Response.ErrorListener() {
+                                    System.out.println(response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
 
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        // TODO: Handle error
-                                        System.out.println("------Error en el Volley");
-                                    }
-                                });
-                        requestQueue.add(jsonObjectRequest);
-                    }
-                }).start();
+                            }
+                        }, new Response.ErrorListener() {
+
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // TODO: Handle error
+                                System.out.println("------Error en el Volley");
+                            }
+                        });
+                requestQueue.add(jsonObjectRequest);
+
+            }
+        });
+
+        adapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Movie currentMovie = adapter.getMovieByPosition(filmsRecyclerView.getChildAdapterPosition(view));
+                SingletonMap.getInstance().put(SingletonMap.CURRENT_FILM_DETAILS, currentMovie);
+                Intent intent = new Intent(getContext(), FilmsDetailsActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -172,11 +180,12 @@ public class FilmsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER) != null) {
-            CustomRecyclerViewAdapter.ViewHolder holder = (CustomRecyclerViewAdapter.ViewHolder) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER);
-            int position = (int) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_POSITION);
-            // Updates this film on the previous view
-            adapter.onBindViewHolder(holder, position);
-        }
+
+//        if (SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER) != null) {
+//            CustomRecyclerViewAdapter.ViewHolder holder = (CustomRecyclerViewAdapter.ViewHolder) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER);
+//            int position = (int) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_POSITION);
+//            // Updates this film on the previous view
+//            adapter.onBindViewHolder(holder, position);
+//        }
     }
 }
