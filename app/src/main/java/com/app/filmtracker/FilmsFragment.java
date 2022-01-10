@@ -180,12 +180,7 @@ public class FilmsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-//        if (SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER) != null) {
-//            CustomRecyclerViewAdapter.ViewHolder holder = (CustomRecyclerViewAdapter.ViewHolder) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_HOLDER);
-//            int position = (int) SingletonMap.getInstance().get(SingletonMap.CURRENT_FILMS_POSITION);
-//            // Updates this film on the previous view
-//            adapter.onBindViewHolder(holder, position);
-//        }
+        if(adapter!=null)
+            adapter.notifyDataSetChanged();
     }
 }

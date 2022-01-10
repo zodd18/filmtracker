@@ -105,30 +105,19 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
                 View.OnClickListener detailsListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        System.out.println("Se ha seleccionado uno");
+                        SingletonMap.getInstance().put(SingletonMap.CURRENT_FILM_DETAILS, currentMovie);
                         Intent intent = new Intent(ctx, FilmsDetailsActivity.class);
                         ctx.startActivity(intent);
-
-////                        System.out.println("NOMBRE DE LA CLASE: ");
-////                        System.out.println(getClass());
-////                        System.out.println(getClass().getSimpleName());
-////                        System.out.println(getClass().getName());
-////                        Map<String, Object> movie = new HashMap<>();
-                        SingletonMap.getInstance().put(SingletonMap.CURRENT_FILM_DETAILS, currentMovie);
-////                        SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_RECYCLER_VIEW, this);
-////                        SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_HOLDER, holder);
-////                        SingletonMap.getInstance().put(SingletonMap.CURRENT_FILMS_POSITION, position);
                     }
                 };
                 holder.btnAbout.setOnClickListener(detailsListener);
-//                holder.card.setOnClickListener(detailsListener);
 
                 // --------------- END of About ---------------
 
 
                 // --------------- Image ---------------
 
-                holder.image.setImageBitmap(currentMovie.getImage());
+//                holder.image.setImageBitmap(currentMovie.getImage());
                 // --------------- END of Image ---------------
 
 
