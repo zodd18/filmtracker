@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -53,6 +55,9 @@ public class FilmsFragment extends Fragment {
     //View Components
     RecyclerView filmsRecyclerView;
     CustomRecyclerViewAdapter adapter;
+    ProgressBar progressBar;
+    TextView textViewProgressBar;
+
     //Data
     List<Genre> genresList;
 
@@ -77,6 +82,14 @@ public class FilmsFragment extends Fragment {
             requestQueue = Volley.newRequestQueue(getActivity());
             SingletonMap.getInstance().put(SingletonMap.REQUEST_QUEUE, requestQueue);
         }
+
+        //ProgressBar
+        progressBar = view.findViewById(R.id.fragmentFilmsProgressBar);
+        textViewProgressBar = view.findViewById(R.id.fragmentFilmsTextProgress);
+
+        progressBar.setVisibility(View.VISIBLE);
+        textViewProgressBar.setVisibility(View.VISIBLE);
+
 
         //Recycler View
         filmsRecyclerView = view.findViewById(R.id.favoriteFilmsRecyclerView);
@@ -126,13 +139,12 @@ public class FilmsFragment extends Fragment {
     private void createAndStartRecyclerView(){
         filmsRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2)); //new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-        adapter = new CustomRecyclerViewAdapter(getActivity(), genresList);
+        adapter = new CustomRecyclerViewAdapter(getActivity(), genresList, progressBar, textViewProgressBar);
 
         //Fetch data
         adapter.setOnLoadCustomListener(new OnLoadCustomListener() {
             @Override
             public void load() {
-                //new ChargeData().execute();
                 String url = "https://api.themoviedb.org/3/discover/movie?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language="+ getString(R.string.language) +"&sort_by=popularity.desc&include_adult=false&include_video=false&page="+ adapter.getLastPage() +"&with_watch_monetization_types=flatrate";
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                         (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -185,42 +197,5 @@ public class FilmsFragment extends Fragment {
             adapter.notifyDataSetChanged();
     }
 
-    private class ChargeData extends AsyncTask<Object, Void, Void> {
-
-
-
-        @Override
-        protected Void doInBackground(Object... objects) {
-            String url = "https://api.themoviedb.org/3/discover/movie?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language="+ getString(R.string.language) +"&sort_by=popularity.desc&include_adult=false&include_video=false&page="+ adapter.getLastPage() +"&with_watch_monetization_types=flatrate";
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                    (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                adapter.setLastPage(response.getInt("page") + 1);
-                                JSONArray movieJsonList = response.getJSONArray("results");
-                                Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
-                                List<Movie> movList = gson.fromJson(movieJsonList.toString(), listType);
-                                adapter.addNewDataAndNotify(movList);
-
-                                System.out.println(response);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-                    }, new Response.ErrorListener() {
-
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            // TODO: Handle error
-                            System.out.println("------Error en el Volley");
-                        }
-                    });
-            requestQueue.add(jsonObjectRequest);
-            return null;
-        }
-
-    }
 
 }

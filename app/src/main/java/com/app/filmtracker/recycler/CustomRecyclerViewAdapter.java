@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -52,16 +53,16 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     //TODO: DOCUMENTACION https://developer.android.com/guide/topics/ui/layout/recyclerview
     //TODO: Ejemplo en stackOverflow: https://stackoverflow.com/questions/40587168/simple-android-grid-example-using-recyclerview-with-gridlayoutmanager-like-the
 
+    private ProgressBar progressBar;
+    private TextView progressBarText;
 
     private List<Movie> data;
-    private Map<Integer, Bitmap> movieImages;
     private List<Genre> genres;
     private LayoutInflater mInflater;
     private View.OnClickListener onClickListener;
     private Context ctx;
     private FirebaseFirestore db;
 
-    //private ItemClickListener mClickListener;
 
     //Dynamic load using API Rest from TBDb
     private int lastPage;
@@ -69,13 +70,15 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     private static final int VISIBLE_THRESHOLD = 30;
     private OnLoadCustomListener onLoadCustomListener;
 
-    public CustomRecyclerViewAdapter(Context context, List<Genre> genres) {
+    public CustomRecyclerViewAdapter(Context context, List<Genre> genres, ProgressBar progressBar, TextView progressBarText) {
         this.ctx = context;
         this.mInflater = LayoutInflater.from(context);
         this.lastPage = 1;
         this.isFetching = false;
         this.data = new ArrayList<>();
         this.genres = genres;
+        this.progressBar = progressBar;
+        this.progressBarText = progressBarText;
         db = FirebaseFirestore.getInstance();
     }
 
@@ -281,7 +284,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     }
 
     // RecyclerView with data
-    public static class ViewHolder extends RecyclerView.ViewHolder  { //implements View.OnClickListener
+    public static class ViewHolder extends RecyclerView.ViewHolder  {
         private ImageView image;
         private TextView title;
         private TextView subtitle;
@@ -299,11 +302,8 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
             image = itemView.findViewById(R.id.filmCardImage);
             title = itemView.findViewById(R.id.filmCardTitle);
             subtitle = itemView.findViewById(R.id.filmCardSubtitle);
-            //description = itemView.findViewById(R.id.filmCardDescription);
             btnAbout = itemView.findViewById(R.id.filmCardButtonAbout);
             card = itemView.findViewById(R.id.card);
-            //btnLike = itemView.findViewById(R.id.filmCardButtonLike);
-            //btnShare = itemView.findViewById(R.id.filmCardButtonShare);
 
         }
     }
@@ -316,13 +316,6 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
     public void addNewDataAndNotify(Collection<? extends Movie> collection){
         new DownloadImageTask().execute(collection);
-//        for(Movie m : collection){
-//
-//            new DownloadImageTask().execute(m, ("https://image.tmdb.org/t/p/w500/"+m.getPoster_path()));
-//        }
-        //this.data.addAll(collection);
-        //this.setFetched();
-        //this.notifyDataSetChanged();
     }
 
 
@@ -363,6 +356,8 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
         @Override
         protected void onPostExecute(Collection<Movie> movies) {
             data.addAll(movies);
+            progressBar.setVisibility(View.INVISIBLE);
+            progressBarText.setVisibility(View.INVISIBLE);
             setFetched();
             notifyDataSetChanged();
         }

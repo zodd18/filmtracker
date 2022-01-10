@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -60,6 +62,9 @@ public class LikesFragment extends Fragment {
     //View Components
     RecyclerView filmsRecyclerView;
     CustomRecyclerViewAdapter recyclerViewAdapter;
+    ProgressBar progressBar;
+    TextView textViewProgressBar;
+
     //Data
     List<Genre> genresList;
 
@@ -76,7 +81,7 @@ public class LikesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_films, container, false);
+        View view = inflater.inflate(R.layout.fragment_likes, container, false);
 
         //Android Volley
         requestQueue = (RequestQueue) SingletonMap.getInstance().get(SingletonMap.REQUEST_QUEUE);
@@ -84,6 +89,13 @@ public class LikesFragment extends Fragment {
             requestQueue = Volley.newRequestQueue(getActivity());
             SingletonMap.getInstance().put(SingletonMap.REQUEST_QUEUE, requestQueue);
         }
+
+        //ProgressBar
+        progressBar = view.findViewById(R.id.favoriteFilmsProgressBar);
+        textViewProgressBar = view.findViewById(R.id.favoriteFilmsTextView);
+
+        progressBar.setVisibility(View.VISIBLE);
+        textViewProgressBar.setVisibility(View.VISIBLE);
 
         //Recycler View
         filmsRecyclerView = view.findViewById(R.id.favoriteFilmsRecyclerView);
@@ -147,13 +159,16 @@ public class LikesFragment extends Fragment {
                             for (DocumentSnapshot document : task.getResult()) {
                                 filmsId.add(Integer.valueOf((String) document.get("film_id")));
                             }
-
+                            if(filmsId.isEmpty()){
+                                progressBar.setVisibility(View.INVISIBLE);
+                                textViewProgressBar.setText(R.string.likes_doesnt_exists);
+                            }
                             // ------------------------------------
 
                             //Fetch data
                             filmsRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2)); //new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-                            recyclerViewAdapter = new CustomRecyclerViewAdapter(getActivity(), genresList);
+                            recyclerViewAdapter = new CustomRecyclerViewAdapter(getActivity(), genresList, progressBar, textViewProgressBar);
 
                             recyclerViewAdapter.setOnLoadCustomListener(new OnLoadCustomListener() {
                                 @Override

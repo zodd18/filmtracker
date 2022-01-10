@@ -62,4 +62,6 @@
     <string name="dialog_group_name_hint">Group name</string>
     <string name="dialog_create_group">Create group</string>
     <string name="dialog_name_cant_be_null">The group name cannot be empty</string>
+    <string name="films_loading_films">Loading films</string>
+    <string name="likes_doesnt_exists">There are no movies in favorites</string>
 </resources>
