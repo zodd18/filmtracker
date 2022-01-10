@@ -121,14 +121,14 @@ public class RegisterActivity extends AppCompatActivity {
                             /*FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);*/
                             Toast.makeText(RegisterActivity.this,
-                                    getText(R.string.register_successful),
+                                    getString(R.string.register_successful),
                                     Toast.LENGTH_SHORT).show();
                             backToLogIn();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(RegisterActivity.this,
-                                    getText(R.string.register_failure),
+                                    getString(R.string.register_failure),
                                     Toast.LENGTH_LONG).show();
                             /*updateUI(user);*/
                         }

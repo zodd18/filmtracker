@@ -211,7 +211,7 @@ public class ChatGroupFragment extends Fragment {
                 }
             });
 
-            dialog.setPositiveButton(R.string.dialog_create_group, new DialogInterface.OnClickListener() {
+            dialog.setPositiveButton(this.getString(R.string.dialog_create_group), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     System.out.println("---------------PULSADO EN OK");
@@ -238,7 +238,7 @@ public class ChatGroupFragment extends Fragment {
         dialog.setView(customView);
         dialog.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.shape_corners_curved));
         dialog.setTitle("Añade un nombre al grupo");
-        dialog.setPositiveButton(R.string.dialog_create_group, new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton(this.getString(R.string.dialog_create_group), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String groupName = textInputLayout.getEditText().getText().toString().trim();
@@ -249,7 +249,7 @@ public class ChatGroupFragment extends Fragment {
                     db.collection("Group")
                             .add(data);
                 } else {
-                    Toast.makeText(getContext(), R.string.dialog_name_cant_be_null,
+                    Toast.makeText(getContext(), getString(R.string.dialog_name_cant_be_null),
                             Toast.LENGTH_SHORT).show();
                 }
 

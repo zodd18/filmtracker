@@ -135,14 +135,14 @@ public class ChatMessageGroupActivity extends AppCompatActivity {
         MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(this);
         TextView textViewInfo = customView.findViewById(R.id.chatItemUserName);
         TextInputLayout textInputLayout = customView.findViewById(R.id.dialogChatTextInput);
-        textViewInfo.setText(this.getText(R.string.vote_dialog_create_info));
+        textViewInfo.setText(this.getString(R.string.vote_dialog_create_info));
         textInputLayout.setStartIconDrawable(R.drawable.ic_baseline_poll_24);
-        textInputLayout.setHint(this.getText(R.string.vote_dialog_create_write));
+        textInputLayout.setHint(this.getString(R.string.vote_dialog_create_write));
 
         dialog.setView(customView);
         dialog.setBackground(ContextCompat.getDrawable(this, R.drawable.shape_corners_curved));
-        dialog.setTitle(this.getText(R.string.vote_dialog_create_title));
-        dialog.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+        dialog.setTitle(this.getString(R.string.vote_dialog_create_title));
+        dialog.setPositiveButton(this.getString(R.string.add), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String text = textInputLayout.getEditText().getText().toString().trim();

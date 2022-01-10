@@ -161,7 +161,7 @@ public class LikesFragment extends Fragment {
                             }
                             if(filmsId.isEmpty()){
                                 progressBar.setVisibility(View.INVISIBLE);
-                                textViewProgressBar.setText(R.string.likes_doesnt_exists);
+                                textViewProgressBar.setText(getString(R.string.likes_doesnt_exists));
                             }
                             // ------------------------------------
 

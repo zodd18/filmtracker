@@ -150,7 +150,7 @@ public class ChatPrivateFragment extends Fragment {
                                     List<Friend> f = new ArrayList<>();
                                     SingletonMap.getInstance().put("FRIEND_LIST", f);
                                     chatProgressBar.setVisibility(View.INVISIBLE);
-                                    chatTextViewLoading.setText(R.string.chat_without_friends);
+                                    chatTextViewLoading.setText(getString(R.string.chat_without_friends));
                                 } else {
                                     //At least the user have 1 friend
                                     List<String> emailFriendsList = new ArrayList<>();
@@ -183,8 +183,8 @@ public class ChatPrivateFragment extends Fragment {
         TextInputLayout textInputLayout = customView.findViewById(R.id.dialogChatTextInput);
         dialog.setView(customView);
         dialog.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.shape_corners_curved));
-        dialog.setTitle(R.string.chat_add_dialog_title);
-        dialog.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+        dialog.setTitle(this.getString(R.string.chat_add_dialog_title));
+        dialog.setPositiveButton(this.getString(R.string.add), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 System.out.println("---------------PULSADO EN OK");
