@@ -291,6 +291,8 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
                 voteHolder.buttonStartVote.setText("Esperando al resto...");
                 //voteHolder.buttonStartVote.setVisibility(View.INVISIBLE);
             } else {    //Aun no he votado
+                voteHolder.buttonStartVote.setEnabled(true);
+                voteHolder.buttonStartVote.setText("Iniciar votación");
                 voteHolder.setButtonVote();
             }
 

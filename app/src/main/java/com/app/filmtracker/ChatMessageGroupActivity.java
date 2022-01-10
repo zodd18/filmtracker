@@ -252,7 +252,7 @@ public class ChatMessageGroupActivity extends AppCompatActivity {
                         }
                         if(existsNewVotes){
                             adapter.notifyDataSetChanged();
-                            recyclerView.scrollToPosition(messages.size() - 1);
+                            //recyclerView.scrollToPosition(messages.size() - 1);
                         }
                     }
                 });
