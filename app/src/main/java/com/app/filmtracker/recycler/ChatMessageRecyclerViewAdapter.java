@@ -15,12 +15,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.filmtracker.R;
 import com.app.filmtracker.poo.SingletonMap;
+import com.app.filmtracker.vo.FilmUserVote;
 import com.app.filmtracker.vo.Message;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -112,8 +118,10 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
 
     //ViewHolder de los votos
     public static class VoteMessageViewHolder extends RecyclerView.ViewHolder  {
+        private TextView chatVotationTextView;
         private TextView filmName;
         private Button buttonStartVote;
+        private FirebaseFirestore db;
 
         //Data
         private String groupMessageId;
@@ -122,32 +130,42 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
 
         VoteMessageViewHolder(View itemView) {
             super(itemView);
+            db = FirebaseFirestore.getInstance();
+            chatVotationTextView = itemView.findViewById(R.id.chatVotationTextView);
             filmName = itemView.findViewById(R.id.chatVotationFilmName);
             buttonStartVote = itemView.findViewById(R.id.buttonStartVote);
+        }
+
+        //---------------------VOTE
+        private void setButtonVote(){
             buttonStartVote.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     View viewDialog = LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_chat_vote, null, false);
-                    launchModal(view, viewDialog, groupMessageId, groupId);
+                    launchVoteModal(view, viewDialog, groupMessageId, groupId);
                 }
             });
         }
 
-        private void launchModal(View view, View viewDialog, String messageId, String groupId){
+        private void launchVoteModal(View view, View viewDialog, String messageId, String groupId){
             MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(view.getContext());
             RecyclerView recyclerView = viewDialog.findViewById(R.id.dialogChatVoteRecycler);
             recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-            DialogVoteRecyclerView adapter = new DialogVoteRecyclerView(view.getContext(), null);
+            DialogVoteRecyclerView adapter = new DialogVoteRecyclerView(view.getContext());
             adapter.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     modal.dismiss();
                     int cal = 10 - recyclerView.getChildAdapterPosition(view);
 
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
                     FirebaseUser thisUser = (FirebaseUser) SingletonMap.getInstance().get(SingletonMap.FIREBASE_USER_INSTANCE);
                     Map<String, Object> data = new HashMap<>();
+                    String name = thisUser.getEmail();
+                    if(thisUser.getDisplayName()!= null && !thisUser.getDisplayName().isEmpty()){
+                        name = thisUser.getDisplayName();
+                    }
+                    data.put("user_name", name);
                     data.put("user_email", thisUser.getEmail());
                     data.put("point", cal);
                     data.put("group_message_id", messageId);
@@ -162,6 +180,57 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
             dialog.setView(viewDialog);
             dialog.setBackground(ContextCompat.getDrawable(view.getContext(), R.drawable.shape_corners_curved));
             dialog.setTitle("Votar una pelicula");
+            modal = dialog.show();
+        }
+
+        //---------------------VIEW RESULTS
+        private void setButtonResults(){
+            this.chatVotationTextView.setText("Votación terminada!");
+            this.buttonStartVote.setEnabled(true);
+            this.buttonStartVote.setText("Ver resultados");
+            buttonStartVote.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    View viewDialog = LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_chat_vote, null, false);
+                    launchResultsModal(view, viewDialog, groupMessageId, groupId);
+                }
+            });
+        }
+
+
+        private void launchResultsModal(View view, View viewDialog, String messageId, String groupId){
+            MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(view.getContext());
+            RecyclerView recyclerView = viewDialog.findViewById(R.id.dialogChatVoteRecycler);
+            recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
+
+            List<FilmUserVote> filmUserVotes = new ArrayList<>();
+            DialogVoteResultsRecyclerView adapter = new DialogVoteResultsRecyclerView(view.getContext(), filmUserVotes);
+            recyclerView.setAdapter(adapter);
+
+            db.collection("FilmUserVote")
+                    .whereEqualTo("group_message_id", groupMessageId)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                List<DocumentSnapshot> dslist = task.getResult().getDocuments();
+                                for(DocumentSnapshot ds: dslist){
+                                    FilmUserVote fuv = new FilmUserVote();
+
+                                    String point = (String) ds.getData().get("point");
+                                    fuv.setPoint(Integer.parseInt(point));
+                                    fuv.setUserName((String) ds.getData().get("user_name"));
+                                    fuv.setUserEmail((String) ds.getData().get("user_email"));
+                                }
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                    });
+
+            dialog.setView(viewDialog);
+            dialog.setBackground(ContextCompat.getDrawable(view.getContext(), R.drawable.shape_corners_curved));
+            dialog.setTitle("Resultados del voto");
             modal = dialog.show();
         }
     }
@@ -213,12 +282,13 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
             voteHolder.filmName.setText(data.get(position).getText());
 
             if(messagesFinishVoted.contains(data.get(position).getId())){   //Todos han votado
-                voteHolder.buttonStartVote.setEnabled(true);
-                voteHolder.buttonStartVote.setText("Ver resultados");
-            } else if(messagesIdVoted.contains(data.get(position).getId())) {   //Faltan por votar
+                voteHolder.setButtonResults();
+            } else if(messagesIdVoted.contains(data.get(position).getId())) { //Ya he votado pero faltan compas
                 voteHolder.buttonStartVote.setEnabled(false);
                 voteHolder.buttonStartVote.setText("Esperando al resto...");
                 //voteHolder.buttonStartVote.setVisibility(View.INVISIBLE);
+            } else {    //Aun no he votado
+                voteHolder.setButtonVote();
             }
 
         }

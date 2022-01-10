@@ -160,6 +160,7 @@ public class ChatMessageGroupActivity extends AppCompatActivity {
                         for(DocumentChange dc : value.getDocumentChanges()) {
                             if (dc.getType().equals(DocumentChange.Type.ADDED)) {
                                 String idMessage = (String) dc.getDocument().getData().get("group_message_id");
+                                //String useremailo = (String) dc.getDocument().getData().get("user_email");
                                 int ant = 0;
                                 if(numVotes.get(idMessage)!= null)
                                     ant = numVotes.get(idMessage);

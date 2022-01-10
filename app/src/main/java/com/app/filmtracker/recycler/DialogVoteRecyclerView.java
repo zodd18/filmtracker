@@ -19,13 +19,11 @@ public class DialogVoteRecyclerView extends RecyclerView.Adapter<DialogVoteRecyc
     private View.OnClickListener onClickListener;
     private LayoutInflater mInflater;
     private Context ctx;
-    private List<Object> data;
 
 
-    public DialogVoteRecyclerView(Context context, List<Object> data) {
+    public DialogVoteRecyclerView(Context context) {
         this.ctx = context;
         this.mInflater = LayoutInflater.from(context);
-        this.data = data;
     }
 
 
