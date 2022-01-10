@@ -122,6 +122,7 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
         private TextView filmName;
         private Button buttonStartVote;
         private FirebaseFirestore db;
+        private Context ctx;
 
         //Data
         private String groupMessageId;
@@ -179,15 +180,15 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
 
             dialog.setView(viewDialog);
             dialog.setBackground(ContextCompat.getDrawable(view.getContext(), R.drawable.shape_corners_curved));
-            dialog.setTitle("Votar una pelicula");
+            dialog.setTitle(ctx.getString(R.string.vote_film));
             modal = dialog.show();
         }
 
         //---------------------VIEW RESULTS
         private void setButtonResults(){
-            this.chatVotationTextView.setText("Votación terminada!");
+            this.chatVotationTextView.setText(ctx.getString(R.string.vote_film_finish));
             this.buttonStartVote.setEnabled(true);
-            this.buttonStartVote.setText("Ver resultados");
+            this.buttonStartVote.setText(ctx.getString(R.string.vote_view_results));
             buttonStartVote.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -202,7 +203,7 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
             MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(view.getContext());
             RecyclerView recyclerView = viewDialog.findViewById(R.id.dialogChatVoteRecycler);
             TextView textView = viewDialog.findViewById(R.id.dialogChatVoteTextView);
-            textView.setText("Puntuación de tus amigos");
+            textView.setText(ctx.getString(R.string.vote_friend_rating));
             recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
 
             List<FilmUserVote> filmUserVotes = new ArrayList<>();
@@ -233,7 +234,7 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
 
             dialog.setView(viewDialog);
             dialog.setBackground(ContextCompat.getDrawable(view.getContext(), R.drawable.shape_corners_curved));
-            dialog.setTitle("Resultados del voto");
+            dialog.setTitle(ctx.getString(R.string.vote_results));
             modal = dialog.show();
         }
     }
@@ -279,7 +280,7 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
         } else { //VIEW_TYPE_VOTE
             VoteMessageViewHolder voteHolder = (VoteMessageViewHolder) holder;
 
-
+            voteHolder.ctx = this.ctx;
             voteHolder.groupId = this.groupId;
             voteHolder.groupMessageId = data.get(position).getId();
             voteHolder.filmName.setText(data.get(position).getText());
@@ -288,11 +289,11 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
                 voteHolder.setButtonResults();
             } else if(messagesIdVoted.contains(data.get(position).getId())) { //Ya he votado pero faltan compas
                 voteHolder.buttonStartVote.setEnabled(false);
-                voteHolder.buttonStartVote.setText("Esperando al resto...");
+                voteHolder.buttonStartVote.setText(ctx.getString(R.string.vote_waiting));
                 //voteHolder.buttonStartVote.setVisibility(View.INVISIBLE);
             } else {    //Aun no he votado
                 voteHolder.buttonStartVote.setEnabled(true);
-                voteHolder.buttonStartVote.setText("Iniciar votación");
+                voteHolder.buttonStartVote.setText(ctx.getString(R.string.vote_start));
                 voteHolder.setButtonVote();
             }
 

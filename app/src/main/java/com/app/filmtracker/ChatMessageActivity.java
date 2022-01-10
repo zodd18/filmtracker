@@ -105,49 +105,6 @@ public class ChatMessageActivity extends AppCompatActivity {
 
         //RecyclerView - Configure the recycler view and then Listen Add events in the db
         configureRecyclerView(messages);
-        /*db.collection("Message")
-                .whereEqualTo("from", thisUser.getEmail())
-                .whereEqualTo("to", thisFriend.getEmail())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
-                            List<DocumentSnapshot> documentsFrom = task.getResult().getDocuments();
-
-                            for(DocumentSnapshot doc : documentsFrom){
-                                Message m = new Message();
-                                m.setText((String) doc.getData().get("text"));
-                                m.setFrom(thisUser.getEmail());
-                                m.setTo(thisFriend.getEmail());
-                                m.setDate(doc.getTimestamp("time").toDate());
-                                messages.add(m);
-                            }
-                            db.collection("Message")
-                                    .whereEqualTo("to", thisUser.getEmail())
-                                    .whereEqualTo("from", thisFriend.getEmail())
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if(task.isSuccessful()){
-                                                List<DocumentSnapshot> documentsTo = task.getResult().getDocuments();
-                                                for(DocumentSnapshot doc : documentsTo){
-                                                    Message m = new Message();
-                                                    m.setText((String) doc.getData().get("text"));
-                                                    m.setFrom(thisFriend.getEmail());
-                                                    m.setTo(thisUser.getEmail());
-                                                    m.setDate(doc.getTimestamp("time").toDate());
-                                                    messages.add(m);
-                                                }
-                                                Collections.sort(messages, Comparator.comparing(Message::getDate));
-                                                configureRecyclerView(messages);
-                                            }
-                                        }
-                                    });
-                        }
-                    }
-                });*/
 
     }
 

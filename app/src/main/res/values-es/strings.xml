@@ -64,4 +64,17 @@
     <string name="vote_dialog_create_info">Escribe el nombre de una película o un texto para iniciar la votación</string>
     <string name="vote_dialog_create_write">Escribe...</string>
     <string name="vote_dialog_create_title">Crear votación</string>
+    <string name="vote_film">Votar una película</string>
+    <string name="vote_film_finish">Votación terminada!</string>
+    <string name="vote_view_results">Ver resultados</string>
+    <string name="vote_friend_rating">Puntuación de tus amigos</string>
+    <string name="vote_results">Resultados del voto</string>
+    <string name="vote_waiting">Esperando al resto...</string>
+    <string name="vote_start">Iniciar votación</string>
+    <string name="group_create">Crear un grupo</string>
+    <string name="group_create_add_name">Añade un nombre al grupo</string>
+    <string name="charge_email_failure">Ha ocurrido un error al cargar tu email</string>
+    <string name="user_not_found">No se ha encontrado el usuario</string>
+    <string name="user_added_succed">Se añadió correctamente el usuario</string>
+    <string name="load_friends_data_failure">Ha ocurrido un error al cargar los datos de tus amigos</string>
 </resources>

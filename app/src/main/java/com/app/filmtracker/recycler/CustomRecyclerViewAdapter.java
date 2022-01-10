@@ -101,8 +101,6 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
                 onLoadCustomListener.load();
             } else {
                 Movie currentMovie = data.get(position);
-//                System.out.println("            POSITION: " + position);
-//                System.out.println("            CURRENT MOVIE: " + currentMovie.getTitle());
 
 
                 // --------------- About ---------------

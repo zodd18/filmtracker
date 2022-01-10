@@ -166,7 +166,7 @@ public class ChatPrivateFragment extends Fragment {
                                 }
 
                             } else {
-                                Toast.makeText(getContext(), "Ha ocurrido un error al cargar tu email(debug).",
+                                Toast.makeText(getContext(), getString(R.string.charge_email_failure),
                                         Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -187,7 +187,6 @@ public class ChatPrivateFragment extends Fragment {
         dialog.setPositiveButton(this.getString(R.string.add), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                System.out.println("---------------PULSADO EN OK");
                 String emailUserName = textInputLayout.getEditText().getText().toString();
 
                 db.collection("User")
@@ -199,7 +198,7 @@ public class ChatPrivateFragment extends Fragment {
                                 if (task.isSuccessful()) {
                                     List<DocumentSnapshot> documents = task.getResult().getDocuments();
                                     if(documents == null || documents.isEmpty()) {
-                                        Toast.makeText(getContext(), "No se ha encontrado el usuario(debug).",
+                                        Toast.makeText(getContext(), getString(R.string.user_not_found),
                                                 Toast.LENGTH_SHORT).show();
                                     } else {
                                         Friend f = new Friend();
@@ -223,7 +222,7 @@ public class ChatPrivateFragment extends Fragment {
                                                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                        Toast.makeText(getContext(), "Se añadió correctamente .",
+                                                        Toast.makeText(getContext(), getString(R.string.user_added_succed),
                                                                 Toast.LENGTH_SHORT).show();
 
                                                     }
@@ -232,7 +231,7 @@ public class ChatPrivateFragment extends Fragment {
 
 
                                 } else {
-                                    Toast.makeText(getContext(), "No se ha encontrado el usuario(debug).",
+                                    Toast.makeText(getContext(), getString(R.string.user_not_found),
                                             Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -273,7 +272,7 @@ public class ChatPrivateFragment extends Fragment {
                             if(configureRecyclerView)
                                 configureRecyclerView(friendList);
                         } else {
-                            Toast.makeText(getContext(), "Ha ocurrido un error al los datos de tus amigos(debug).",
+                            Toast.makeText(getContext(), getString(R.string.load_friends_data_failure),
                                     Toast.LENGTH_SHORT).show();
                         }
                     }

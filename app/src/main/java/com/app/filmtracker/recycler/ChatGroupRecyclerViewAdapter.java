@@ -63,37 +63,6 @@ public class ChatGroupRecyclerViewAdapter extends RecyclerView.Adapter<ChatGroup
         return data.size();
     }
 
-    //Profile image task
-    /*private class ChargeImageProfileFireStorage extends AsyncTask<Object, Void, Void> {
-
-        private String userEmail;
-        private ChatRecyclerViewAdapter.ViewHolder holder;
-        private Friend thisFriend;
-
-        @Override
-        protected Void doInBackground(Object... objects) {
-            this.userEmail = (String) objects[0];
-            this.holder = (ChatRecyclerViewAdapter.ViewHolder) objects [1];
-            this.thisFriend = (Friend) objects [2];
-
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageReference = storage.getReference().child(this.userEmail + "/" +"image_profile");
-            final long FIVE_MEGABYTE = 1024 * 1024 * 5;
-            storageReference.getBytes(FIVE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                @Override
-                public void onSuccess(@NonNull byte[] bytes) {
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    if(bitmap!=null){
-                        thisFriend.setProfileImage(bitmap);
-                        holder.chatItemprofileImage.setImageBitmap(bitmap);
-                    }
-                }
-            });
-
-            return null;
-        }
-
-    }*/
 
     //-------------------------OnClick events
     public void setOnClickListener(View.OnClickListener onClickListener) {

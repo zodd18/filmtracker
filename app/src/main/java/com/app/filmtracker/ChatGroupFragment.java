@@ -200,7 +200,7 @@ public class ChatGroupFragment extends Fragment {
             MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(getContext());
             //dialog.setView(customView);
             dialog.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.shape_corners_curved));
-            dialog.setTitle("Crear un grupo");
+            dialog.setTitle(getString(R.string.group_create));
             dialog.setMultiChoiceItems(friendCharSequence, checked, new DialogInterface.OnMultiChoiceClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i, boolean b) {
@@ -214,7 +214,6 @@ public class ChatGroupFragment extends Fragment {
             dialog.setPositiveButton(this.getString(R.string.dialog_create_group), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    System.out.println("---------------PULSADO EN OK");
 
                     List<String> emailList = new ArrayList<>();
                     for(Integer pos : posFriends){
@@ -237,7 +236,7 @@ public class ChatGroupFragment extends Fragment {
         MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(getContext());
         dialog.setView(customView);
         dialog.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.shape_corners_curved));
-        dialog.setTitle("Añade un nombre al grupo");
+        dialog.setTitle(getString(R.string.group_create_add_name));
         dialog.setPositiveButton(this.getString(R.string.dialog_create_group), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
