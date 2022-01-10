@@ -201,6 +201,8 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
         private void launchResultsModal(View view, View viewDialog, String messageId, String groupId){
             MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(view.getContext());
             RecyclerView recyclerView = viewDialog.findViewById(R.id.dialogChatVoteRecycler);
+            TextView textView = viewDialog.findViewById(R.id.dialogChatVoteTextView);
+            textView.setText("Puntuación de tus amigos");
             recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
 
             List<FilmUserVote> filmUserVotes = new ArrayList<>();
@@ -218,10 +220,11 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
                                 for(DocumentSnapshot ds: dslist){
                                     FilmUserVote fuv = new FilmUserVote();
 
-                                    String point = (String) ds.getData().get("point");
-                                    fuv.setPoint(Integer.parseInt(point));
+                                    Double point = ds.getDouble("point");
+                                    fuv.setPoint(point.intValue());
                                     fuv.setUserName((String) ds.getData().get("user_name"));
                                     fuv.setUserEmail((String) ds.getData().get("user_email"));
+                                    filmUserVotes.add(fuv);
                                 }
                                 adapter.notifyDataSetChanged();
                             }
