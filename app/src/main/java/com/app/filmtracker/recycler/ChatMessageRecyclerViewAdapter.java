@@ -312,6 +312,8 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
         if(data.get(position).getFrom().equalsIgnoreCase(this.thisUserEmail)){
             return VIEW_TYPE_SELF;
         } else {
+            if(!this.showFriendNames)
+                return VIEW_TYPE_FRIEND;
             if(position >= 1){
                 if(this.data.get(position).getFrom().equalsIgnoreCase(this.data.get(position-1).getFrom())){
                     return VIEW_TYPE_FRIEND;
