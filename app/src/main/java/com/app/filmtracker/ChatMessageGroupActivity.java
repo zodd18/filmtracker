@@ -2,13 +2,20 @@ package com.app.filmtracker;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.app.filmtracker.poo.SingletonMap;
 import com.app.filmtracker.recycler.ChatMessageRecyclerViewAdapter;
@@ -16,6 +23,8 @@ import com.app.filmtracker.vo.Friend;
 import com.app.filmtracker.vo.Group;
 import com.app.filmtracker.vo.Message;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
@@ -106,6 +115,55 @@ public class ChatMessageGroupActivity extends AppCompatActivity {
                 finish();
             }
         });
+        topMenuToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.topMenuCreateVote:
+                        System.out.println("--------entra en votacion");
+                        View viewDialog = LayoutInflater.from(ChatMessageGroupActivity.this).inflate(R.layout.dialog_chat_add_friend, null, false);
+                        launchDialogCreateVote(viewDialog);
+
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void launchDialogCreateVote(View customView){
+        MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(this);
+        TextView textViewInfo = customView.findViewById(R.id.chatItemUserName);
+        TextInputLayout textInputLayout = customView.findViewById(R.id.dialogChatTextInput);
+        textViewInfo.setText(this.getText(R.string.vote_dialog_create_info));
+        textInputLayout.setStartIconDrawable(R.drawable.ic_baseline_poll_24);
+        textInputLayout.setHint(this.getText(R.string.vote_dialog_create_write));
+
+        dialog.setView(customView);
+        dialog.setBackground(ContextCompat.getDrawable(this, R.drawable.shape_corners_curved));
+        dialog.setTitle(this.getText(R.string.vote_dialog_create_title));
+        dialog.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String text = textInputLayout.getEditText().getText().toString().trim();
+                if(!text.isEmpty()){
+                    Map<String, Object> data = new HashMap<>();
+                    String name = thisUser.getEmail();
+                    if(thisUser.getDisplayName() != null && !thisUser.getDisplayName().isEmpty())
+                        name = thisUser.getDisplayName();
+
+                    data.put("from_name", name);
+                    data.put("from", thisUser.getEmail());
+                    data.put("group_id", thisGroup.getId());
+                    data.put("text", text);
+                    data.put("time", Timestamp.now());
+                    data.put("is_vote", true);
+                    db.collection("GroupMessage")
+                            .add(data);
+                }
+            }
+        });
+        dialog.show();
     }
 
     private void configRecyclerView(){

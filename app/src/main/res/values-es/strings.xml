@@ -61,4 +61,7 @@
     <string name="dialog_name_cant_be_null">El nombre del grupo no puede estar vacío</string>
     <string name="films_loading_films">Cargando películas</string>
     <string name="likes_doesnt_exists">No hay pelis en favoritos</string>
+    <string name="vote_dialog_create_info">Escribe el nombre de una película o un texto para iniciar la votación</string>
+    <string name="vote_dialog_create_write">Escribe...</string>
+    <string name="vote_dialog_create_title">Crear votación</string>
 </resources>
