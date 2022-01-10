@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:backgroundTint="?attr/customBgColor"
+    android:id="@+id/card"
+    android:layout_width="150dp"
+    android:layout_height="match_parent"
+    android:background="?attr/customBgColorSecondary"
+    android:layout_margin="8dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <!-- Media -->
+        <ImageView
+            android:id="@+id/chatDialogVoteImage"
+            android:layout_width="wrap_content"
+            android:layout_height="90dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/img_trophy_gold"
+            android:background="@android:color/transparent"/>
+
+        <TextView
+            android:id="@+id/chatDialogVoteNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="10"
+            android:textAlignment="center"
+            android:textSize="40sp" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
+

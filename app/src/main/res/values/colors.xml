@@ -28,4 +28,7 @@
     <color name="gray_blue_custom">#32353E</color>
 
     <color name="purple_dark">#2E243C</color>
+
+    <color name="deep_purple_700">#512DA8</color>
+    <color name="deep_purple_A200">#7C4DFF</color>
 </resources>

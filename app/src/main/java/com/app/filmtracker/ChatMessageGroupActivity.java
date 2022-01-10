@@ -123,6 +123,7 @@ public class ChatMessageGroupActivity extends AppCompatActivity {
                                 m.setFrom((String) doc.getData().get("from"));
                                 m.setFromName((String) doc.getData().get("from_name"));
                                 m.setDate(doc.getTimestamp("time").toDate());
+                                m.setVote((Boolean) doc.getData().get("is_vote"));
                                 messages.add(m);
 
                                 existsNewMessages = true;
@@ -150,6 +151,7 @@ public class ChatMessageGroupActivity extends AppCompatActivity {
         data.put("group_id", thisGroup.getId());
         data.put("text", text);
         data.put("time", Timestamp.now());
+        data.put("is_vote", false);
 
         db.collection("GroupMessage")
                 .add(data);
