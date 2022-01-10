@@ -59,13 +59,14 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     private LayoutInflater mInflater;
     private View.OnClickListener onClickListener;
     private Context ctx;
+    private FirebaseFirestore db;
 
     //private ItemClickListener mClickListener;
 
     //Dynamic load using API Rest from TBDb
     private int lastPage;
     private boolean isFetching;
-    private static final int VISIBLE_THRESHOLD = 15;
+    private static final int VISIBLE_THRESHOLD = 30;
     private OnLoadCustomListener onLoadCustomListener;
 
     public CustomRecyclerViewAdapter(Context context, List<Genre> genres) {
@@ -75,6 +76,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
         this.isFetching = false;
         this.data = new ArrayList<>();
         this.genres = genres;
+        db = FirebaseFirestore.getInstance();
     }
 
     // Inflates the cell layout from xml when needed
@@ -98,7 +100,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
                 Movie currentMovie = data.get(position);
 //                System.out.println("            POSITION: " + position);
 //                System.out.println("            CURRENT MOVIE: " + currentMovie.getTitle());
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
                 // --------------- About ---------------
 
@@ -117,7 +119,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
                 // --------------- Image ---------------
 
-//                holder.image.setImageBitmap(currentMovie.getImage());
+                holder.image.setImageBitmap(currentMovie.getImage());
                 // --------------- END of Image ---------------
 
 
@@ -313,12 +315,14 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
 
     public void addNewDataAndNotify(Collection<? extends Movie> collection){
-        for(Movie m : collection){
-            new DownloadImageTask().execute(m, ("https://image.tmdb.org/t/p/w500/"+m.getPoster_path()));
-        }
-        this.data.addAll(collection);
-        this.setFetched();
-        this.notifyDataSetChanged();
+        new DownloadImageTask().execute(collection);
+//        for(Movie m : collection){
+//
+//            new DownloadImageTask().execute(m, ("https://image.tmdb.org/t/p/w500/"+m.getPoster_path()));
+//        }
+        //this.data.addAll(collection);
+        //this.setFetched();
+        //this.notifyDataSetChanged();
     }
 
 
@@ -336,26 +340,30 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
 
 
-    private class DownloadImageTask extends AsyncTask<Object, Void, Bitmap> {
-        private Movie thisMovie;
+    private class DownloadImageTask extends AsyncTask<Object, Void, Collection<Movie>> {
 
         @Override
-        protected Bitmap doInBackground(Object... objects) {
-            this.thisMovie = (Movie) objects[0];
-            String urldisplay = objects[1].toString();
-            Bitmap movieImage = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                movieImage = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                e.printStackTrace();
+        protected Collection<Movie> doInBackground(Object... objects) {
+            Collection<Movie> movieCollection = (Collection<Movie>) objects[0];
+
+            for(Movie m : movieCollection){
+                String urldisplay = "https://image.tmdb.org/t/p/w500/"+m.getPoster_path();
+                Bitmap movieImage = null;
+                try {
+                    InputStream in = new java.net.URL(urldisplay).openStream();
+                    movieImage = BitmapFactory.decodeStream(in);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                m.setImage(movieImage);
             }
-            return movieImage;
+            return movieCollection;
         }
 
         @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            this.thisMovie.setImage(bitmap);
+        protected void onPostExecute(Collection<Movie> movies) {
+            data.addAll(movies);
+            setFetched();
             notifyDataSetChanged();
         }
     }

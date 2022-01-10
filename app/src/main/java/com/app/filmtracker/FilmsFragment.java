@@ -1,6 +1,7 @@
 package com.app.filmtracker;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -131,7 +132,7 @@ public class FilmsFragment extends Fragment {
         adapter.setOnLoadCustomListener(new OnLoadCustomListener() {
             @Override
             public void load() {
-
+                //new ChargeData().execute();
                 String url = "https://api.themoviedb.org/3/discover/movie?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language="+ getString(R.string.language) +"&sort_by=popularity.desc&include_adult=false&include_video=false&page="+ adapter.getLastPage() +"&with_watch_monetization_types=flatrate";
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                         (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -183,4 +184,43 @@ public class FilmsFragment extends Fragment {
         if(adapter!=null)
             adapter.notifyDataSetChanged();
     }
+
+    private class ChargeData extends AsyncTask<Object, Void, Void> {
+
+
+
+        @Override
+        protected Void doInBackground(Object... objects) {
+            String url = "https://api.themoviedb.org/3/discover/movie?api_key=a9e15ccf0b964bbf599fef3ba94ef87b&language="+ getString(R.string.language) +"&sort_by=popularity.desc&include_adult=false&include_video=false&page="+ adapter.getLastPage() +"&with_watch_monetization_types=flatrate";
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                    (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                adapter.setLastPage(response.getInt("page") + 1);
+                                JSONArray movieJsonList = response.getJSONArray("results");
+                                Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
+                                List<Movie> movList = gson.fromJson(movieJsonList.toString(), listType);
+                                adapter.addNewDataAndNotify(movList);
+
+                                System.out.println(response);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // TODO: Handle error
+                            System.out.println("------Error en el Volley");
+                        }
+                    });
+            requestQueue.add(jsonObjectRequest);
+            return null;
+        }
+
+    }
+
 }
