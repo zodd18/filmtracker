@@ -8,6 +8,7 @@ public class Message {
     private String text;
     private Date date;
     private String fromName;
+    private String Id;
     private boolean isVote;
 
     public String getFrom() {
@@ -56,5 +57,13 @@ public class Message {
 
     public void setVote(boolean vote) {
         isVote = vote;
+    }
+
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        Id = id;
     }
 }

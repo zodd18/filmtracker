@@ -8,16 +8,24 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.filmtracker.R;
+import com.app.filmtracker.poo.SingletonMap;
 import com.app.filmtracker.vo.Message;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_TYPE_SELF = 0;
@@ -31,31 +39,38 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
 
     //Data
     private List<Message> data;
-//    private List<FilmVote> filmVotes;
     private String thisUserEmail;
     private SimpleDateFormat sdt;
     private boolean showFriendNames;
+    private Set<String> messagesIdVoted;
+    private Set<String> messagesFinishVoted;
+    private String groupId;
 
     //entrara una lsita de Message
     public ChatMessageRecyclerViewAdapter(Context context, List<Message> messages, String thisUserEmail, boolean showFriendNames) {
         this.ctx = context;
         this.mInflater = LayoutInflater.from(context);
         this.data = messages;
-//        this.filmVotes = new ArrayList<>();
         this.thisUserEmail = thisUserEmail;
         this.showFriendNames = showFriendNames;
         sdt = new SimpleDateFormat("HH:mm dd/MM/yyyy");
     }
 
-//    public ChatMessageRecyclerViewAdapter(Context context, List<Message> messages, String thisUserEmail, boolean showFriendNames, List<FilmVote> filmVotes) {
-//        this.ctx = context;
-//        this.mInflater = LayoutInflater.from(context);
-//        this.data = messages;
-//        this.filmVotes = filmVotes;
-//        this.thisUserEmail = thisUserEmail;
-//        this.showFriendNames = showFriendNames;
-//        sdt = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-//    }
+    public ChatMessageRecyclerViewAdapter(Context context, List<Message> messages,
+                                          String thisUserEmail, boolean showFriendNames,
+                                          Set<String> messagesIdVoted, Set<String> messagesFinishVoted,
+                                          String groupId) {
+        this.ctx = context;
+        this.mInflater = LayoutInflater.from(context);
+        this.data = messages;
+        this.messagesIdVoted = messagesIdVoted;
+        this.groupId = groupId;
+        this.messagesFinishVoted = messagesFinishVoted;
+        this.thisUserEmail = thisUserEmail;
+        this.showFriendNames = showFriendNames;
+        sdt = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+    }
+
 
     //ViewHolder de los mensajes propios
     public static class SelfMessageViewHolder extends RecyclerView.ViewHolder  {
@@ -100,6 +115,11 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
         private TextView filmName;
         private Button buttonStartVote;
 
+        //Data
+        private String groupMessageId;
+        private String groupId;
+        AlertDialog modal;
+
         VoteMessageViewHolder(View itemView) {
             super(itemView);
             filmName = itemView.findViewById(R.id.chatVotationFilmName);
@@ -108,12 +128,12 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
                 @Override
                 public void onClick(View view) {
                     View viewDialog = LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_chat_vote, null, false);
-                    launchModal(view, viewDialog);
+                    launchModal(view, viewDialog, groupMessageId, groupId);
                 }
             });
         }
 
-        private void launchModal(View view,View viewDialog){
+        private void launchModal(View view, View viewDialog, String messageId, String groupId){
             MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(view.getContext());
             RecyclerView recyclerView = viewDialog.findViewById(R.id.dialogChatVoteRecycler);
             recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -122,7 +142,19 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
             adapter.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    modal.dismiss();
+                    int cal = 10 - recyclerView.getChildAdapterPosition(view);
 
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    FirebaseUser thisUser = (FirebaseUser) SingletonMap.getInstance().get(SingletonMap.FIREBASE_USER_INSTANCE);
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("user_email", thisUser.getEmail());
+                    data.put("point", cal);
+                    data.put("group_message_id", messageId);
+                    data.put("group_id", groupId);
+
+                    db.collection("FilmUserVote")
+                            .add(data);
                 }
             });
             recyclerView.setAdapter(adapter);
@@ -130,7 +162,7 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
             dialog.setView(viewDialog);
             dialog.setBackground(ContextCompat.getDrawable(view.getContext(), R.drawable.shape_corners_curved));
             dialog.setTitle("Votar una pelicula");
-            dialog.show();
+            modal = dialog.show();
         }
     }
 
@@ -175,8 +207,19 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
         } else { //VIEW_TYPE_VOTE
             VoteMessageViewHolder voteHolder = (VoteMessageViewHolder) holder;
 
+
+            voteHolder.groupId = this.groupId;
+            voteHolder.groupMessageId = data.get(position).getId();
             voteHolder.filmName.setText(data.get(position).getText());
-            //voteHolder.buttonStartVote
+
+            if(messagesFinishVoted.contains(data.get(position).getId())){   //Todos han votado
+                voteHolder.buttonStartVote.setEnabled(true);
+                voteHolder.buttonStartVote.setText("Ver resultados");
+            } else if(messagesIdVoted.contains(data.get(position).getId())) {   //Faltan por votar
+                voteHolder.buttonStartVote.setEnabled(false);
+                voteHolder.buttonStartVote.setText("Esperando al resto...");
+                //voteHolder.buttonStartVote.setVisibility(View.INVISIBLE);
+            }
 
         }
     }
@@ -189,9 +232,6 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
     @Override
     public int getItemViewType(int position) {
         //Mirar si es mio el mensaje o de mis amigos
-
-//        if(filmVotes.get(position).getTime().after(data.get(position).getDate()))
-//            return VIEW_TYPE_VOTE;
 
         if(data.get(position).isVote())
             return VIEW_TYPE_VOTE;
