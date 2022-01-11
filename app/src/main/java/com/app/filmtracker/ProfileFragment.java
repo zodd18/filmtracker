@@ -35,7 +35,6 @@ public class ProfileFragment extends Fragment {
 
     //View Components
     Button button;
-    Button btnProfileFilms;
     TextView tvprofileName, favoriteFilms, watchedFilms, comments;
     ImageView imageProfile;
 
@@ -63,7 +62,6 @@ public class ProfileFragment extends Fragment {
         //View Components
         tvprofileName = view.findViewById(R.id.profileName);
         imageProfile = view.findViewById(R.id.profileImageViewUser);
-        btnProfileFilms = view.findViewById(R.id.profileFilms);
         favoriteFilms = view.findViewById(R.id.textFavoriteFilms);
         watchedFilms = view.findViewById(R.id.textWatchedFilms);
         comments = view.findViewById(R.id.textComments);

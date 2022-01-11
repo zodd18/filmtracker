@@ -6,42 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?attr/customBgColor"
-        tools:context=".ProfileActivity">
-
-        <!--android:background="@drawable/shape_rectange"-->
-        <!--<ImageView
-        android:id="@+id/profileFirstBg"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/shape_rectangle_bottom_curved" />
-
-    <ImageView
-        android:id="@+id/profileSecondBg"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline5"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/shape_rectangle_top_curved" />-->
-
-        <!--app:layout_constraintVertical_bias="0.63"
-    app:layout_constraintBottom_toBottomOf="@+id/profileFirstBg"-->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
             android:layout_width="155dp"
@@ -64,8 +29,6 @@
 
 
         </androidx.cardview.widget.CardView>
-
-        <!--app:layout_constraintTop_toBottomOf="@+id/profileFirstBg"-->
 
 
         <TextView
@@ -196,6 +159,6 @@
             app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
