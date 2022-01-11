@@ -80,4 +80,7 @@
     <string name="user_not_found">User has not been found</string>
     <string name="user_added_succed">The user was successfully added</string>
     <string name="load_friends_data_failure">An error occurred while uploading your friends\' data</string>
+    <string name="logged_correct">You are successfully logged in</string>
+    <string name="logged_incorrect">You have not been able to log in correctly</string>
+    <string name="login_data_error">An error occurred while loading the data</string>
 </resources>

@@ -149,12 +149,12 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(LoginActivity.this, "Te has logeado(debug).",
+                            Toast.makeText(LoginActivity.this, getString(R.string.logged_correct),
                                     Toast.LENGTH_SHORT).show();
                             checkLoggedUserAndGoNextActivity(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(LoginActivity.this, "NO te has logeado(debug).",
+                            Toast.makeText(LoginActivity.this, getString(R.string.logged_incorrect),
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -166,27 +166,8 @@ public class LoginActivity extends AppCompatActivity {
     private void signInOAuthGoogle() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         googleOAuthResultLauncher.launch(signInIntent);
-        //startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    /*@Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account.getIdToken());
-            } catch (ApiException e) {
-                Toast.makeText(LoginActivity.this, "No te has logeado en google(debug).",
-                        Toast.LENGTH_SHORT).show();
-                // Google Sign In failed, update UI appropriately
-            }
-        }
-    }*/
 
 
     ActivityResultLauncher<Intent> googleOAuthResultLauncher = registerForActivityResult(
@@ -203,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
                             GoogleSignInAccount account = task.getResult(ApiException.class);
                             firebaseAuthWithGoogle(account.getIdToken());
                         } catch (ApiException e) {
-                            Toast.makeText(LoginActivity.this, "No te has logeado en google(debug).",
+                            Toast.makeText(LoginActivity.this, getString(R.string.logged_incorrect),
                                     Toast.LENGTH_SHORT).show();
                             // Google Sign In failed, update UI appropriately
                         }
@@ -220,13 +201,13 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Toast.makeText(LoginActivity.this, "Te has logeado en google!(debug).",
+                            Toast.makeText(LoginActivity.this, getString(R.string.logged_correct),
                                     Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             checkLoggedUserAndGoNextActivity(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(LoginActivity.this, "Ha ocurrido un error con el token(?)(debug).",
+                            Toast.makeText(LoginActivity.this, getString(R.string.logged_incorrect),
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -260,7 +241,7 @@ public class LoginActivity extends AppCompatActivity {
                             if(documents == null || documents.isEmpty())
                                 saveUserDataInFireStore(user);
                         } else {
-                            Toast.makeText(LoginActivity.this, "Ha ocurrido un error al cargar los datos (debug).",
+                            Toast.makeText(LoginActivity.this, getString(R.string.login_data_error),
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -289,7 +270,7 @@ public class LoginActivity extends AppCompatActivity {
                             if(user.getPhotoUrl() != null && !user.getPhotoUrl().toString().isEmpty())
                                 new UploadImageFireStorage().execute(user.getPhotoUrl().toString(), user.getEmail(), task.getResult().getId());
                         } else {
-                            Toast.makeText(LoginActivity.this, "Ha ocurrido un error al guardar datos.",
+                            Toast.makeText(LoginActivity.this, getString(R.string.login_data_error),
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -334,13 +315,11 @@ public class LoginActivity extends AppCompatActivity {
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    System.out.println("-------------Subida de la imagen del perfil - ERROR");
                     //Do nothing
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    System.out.println("-------------SE HA SUBIDO CORRECTAMENTE LA IMAGEN DE PERFIL");
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                     db.collection("User")
                             .document(userId)

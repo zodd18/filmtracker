@@ -81,9 +81,9 @@ public class PrincipalActivity extends AppCompatActivity {
                         Intent intent = new Intent(PrincipalActivity.this, PrincipalChatActivity.class); //ChatActivity
                         startActivity(intent);
                         return true;
-                    case R.id.topMenuSearch:
-                        System.out.println("--------entra en la busqueda");
-                        return true;
+//                    case R.id.topMenuSearch:
+//                        System.out.println("--------entra en la busqueda");
+//                        return true;
                 }
                 return false;
             }
