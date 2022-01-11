@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.filmtracker.poo.SingletonMap;
 import com.app.filmtracker.recycler.ChatMessageRecyclerViewAdapter;
@@ -65,6 +66,9 @@ public class ChatMessageGroupActivity extends AppCompatActivity {
     //Custom Recycler View Adapter
     private ChatMessageRecyclerViewAdapter adapter;
 
+    //Aditional data
+    boolean firstTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +80,7 @@ public class ChatMessageGroupActivity extends AppCompatActivity {
         messagesIdVoted = new HashSet<>();
         numVotes = new HashMap<>();
         messagesFinishVoted = new HashSet<>();
+        firstTime = true;
 
         //View Components
         topMenuToolbar = findViewById(R.id.chatMessageGroupTopMenuToolbar);
@@ -93,7 +98,7 @@ public class ChatMessageGroupActivity extends AppCompatActivity {
         //Fetch Data and set Snapshot Listener
         addSnapshotListenerMessagesInGroup(thisGroup);
         addSnapshotListenerVoteMessagesSelf(thisGroup);
-        addSnapshotListenerVoteMessagesAll(thisGroup);
+        addSnapshotListenerVoteMessagesAll();
 
         //Send botttom
         chatMessageSendButton.setOnClickListener(new View.OnClickListener() {
@@ -208,7 +213,8 @@ public class ChatMessageGroupActivity extends AppCompatActivity {
     }
 
 
-    private void addSnapshotListenerVoteMessagesAll(Group group){
+    private void addSnapshotListenerVoteMessagesAll(){
+
 
         db.collection("FilmUserVote")
                 .whereEqualTo("group_id", thisGroup.getId())
@@ -227,9 +233,14 @@ public class ChatMessageGroupActivity extends AppCompatActivity {
                                     //Votacion terminada - Todos han votado
                                     messagesFinishVoted.add(idMessage);
                                     adapter.notifyDataSetChanged();
+                                    if(!firstTime){
+                                        Toast.makeText(ChatMessageGroupActivity.this, getString(R.string.vote_complete_toast),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             }
                         }
+                        firstTime = false;
                     }
                 });
     }

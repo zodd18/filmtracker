@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -13,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.app.filmtracker.LoginActivity;
 import com.app.filmtracker.R;
 import com.app.filmtracker.poo.SingletonMap;
 import com.app.filmtracker.vo.FilmUserVote;
@@ -21,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -173,7 +176,20 @@ public class ChatMessageRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
                     data.put("group_id", groupId);
 
                     db.collection("FilmUserVote")
-                            .add(data);
+                            .add(data)
+                            .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentReference> task) {
+                                    if(task.isSuccessful()){
+                                        Toast.makeText(ctx, ctx.getString(R.string.vote_confirm_toast),
+                                                Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(ctx, ctx.getString(R.string.vote_failure),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+
                 }
             });
             recyclerView.setAdapter(adapter);

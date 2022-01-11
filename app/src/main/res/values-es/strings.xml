@@ -80,4 +80,7 @@
     <string name="logged_correct">Has iniciado sesión correctamente</string>
     <string name="logged_incorrect">No has podido iniciar sesión correctamente</string>
     <string name="login_data_error">Ha ocurrido un error al cargar los datos</string>
+    <string name="vote_confirm_toast">El voto se ha realizado correctamente</string>
+    <string name="vote_failure">Ha ocurrido un error al realizar el voto</string>
+    <string name="vote_complete_toast">Una votación ha terminado!</string>
 </resources>

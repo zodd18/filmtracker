@@ -83,4 +83,7 @@
     <string name="logged_correct">You are successfully logged in</string>
     <string name="logged_incorrect">You have not been able to log in correctly</string>
     <string name="login_data_error">An error occurred while loading the data</string>
+    <string name="vote_confirm_toast">The vote has been carried out correctly</string>
+    <string name="vote_failure">An error occurred while voting</string>
+    <string name="vote_complete_toast">A vote has ended!</string>
 </resources>

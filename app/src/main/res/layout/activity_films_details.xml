@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-
-    android:layout_height="match_parent"
-    tools:context=".FilmsDetailsActivity">
 
     <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content" >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/customBgColor"
-            android:orientation="vertical">
+            tools:context=".FilmsDetailsActivity"
+            android:background="?attr/customBgColor">
 
             <!-- TextView and other stuff -->
             <TextView
@@ -206,8 +202,9 @@
 
             <ListView
                 android:id="@+id/detailsListViewComments"
-                android:layout_width="366dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginHorizontal="40dp"
                 android:layout_marginTop="44dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.571"
@@ -220,8 +217,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="24dp"
-                android:backgroundTint="#E91E63"
-                android:tint="#FFFFFF"
+                android:backgroundTint="?attr/colorPrimary"
+                app:tint="@color/white"
                 app:layout_constraintStart_toEndOf="@+id/detailsCommentTextField"
                 app:layout_constraintTop_toBottomOf="@+id/detailsTitle5"
                 app:srcCompat="@drawable/ic_baseline_chat_bubble_24" />
@@ -239,15 +236,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/detailsTitle5" />
 
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detailsListViewComments" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
@@ -255,4 +243,3 @@
 
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
