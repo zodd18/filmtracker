@@ -99,7 +99,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
             if ((position+VISIBLE_THRESHOLD)>=data.size() && !isFetching) {
                 isFetching = true;
                 onLoadCustomListener.load();
-            } else {
+           }
                 Movie currentMovie = data.get(position);
 
 
@@ -270,7 +270,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
                 });
 
                 // --------------- END of Like btn ---------------
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
